@@ -569,6 +569,28 @@ EOT;
         if ($failureCount > 0) {
             $this->line("  - Failed installations: {$failureCount}");
         }
+
+        // Run composer dump-autoload if any packages were successfully installed
+        if ($successCount > 0) {
+            $this->info('Running composer dump-autoload...');
+            try {
+                $process = Process::timeout(60)->run('composer dump-autoload', function ($type, $output) {
+                    if ($type === 'out') {
+                        $this->output->write($output);
+                    } else {
+                        $this->info($output);
+                    }
+                });
+
+                if ($process->successful()) {
+                    $this->info('✓ Composer autoload regenerated successfully');
+                } else {
+                    $this->warn('⚠ Failed to regenerate composer autoload');
+                }
+            } catch (\Exception $e) {
+                $this->warn('⚠ Error running composer dump-autoload: ' . $e->getMessage());
+            }
+        }
     }
 
     /**
