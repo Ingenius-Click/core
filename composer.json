@@ -1,0 +1,47 @@
+{
+    "name": "ingenius/core",
+    "description": "Core package for Ingenius Click with shared resources and tenancy features",
+    "type": "library",
+    "license": "MIT",
+    "version": "0.0.1",
+    "authors": [
+        {
+            "name": "Ingenius Team",
+            "email": "info@ingeniusclick.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^12.0",
+        "spatie/laravel-permission": "^6.0",
+        "spatie/laravel-medialibrary": "^11.13",
+        "stancl/tenancy": "^3.9",
+        "laravel/sanctum": "^4.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ingenius\\Core\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ingenius\\Core\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ingenius\\Core\\Providers\\CoreServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+} 
