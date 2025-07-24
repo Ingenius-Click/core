@@ -5,6 +5,7 @@ namespace Ingenius\Core\Providers;
 use Illuminate\Support\ServiceProvider;
 use Ingenius\Core\Console\Commands\AddAdminRoleToCentralUserCommand;
 use Ingenius\Core\Console\Commands\ClearSettingsCacheCommand;
+use Ingenius\Core\Console\Commands\CreateBasicUserCommand;
 use Ingenius\Core\Console\Commands\CreatePackageCommand;
 use Ingenius\Core\Console\Commands\CreateTenantCommand;
 use Ingenius\Core\Console\Commands\CreateTemplatesCommand;
@@ -34,6 +35,7 @@ class ConsoleServiceProvider extends ServiceProvider
         CreatePackageCommand::class,
         CreateTenantCommand::class,
         CreateTemplatesCommand::class,
+        CreateBasicUserCommand::class,
         InitializePackageCommand::class,
         PublishMigrationsCommand::class,
         TenantMigrateCommand::class,

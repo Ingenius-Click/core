@@ -61,8 +61,9 @@ class InstallCommand extends Command
             $this->call('migrate');
         }
 
-        // Create basic user
-        $this->createBasicUser();
+        // Create basic user (in separate process)
+        $this->info('Creating basic user...');
+        $this->call('ingenius:create-user');
 
         // Create basic templates with default features (in separate process)
         $this->info('Creating basic templates...');
@@ -601,31 +602,5 @@ EOT;
                 $this->warn('⚠ Error running package discovery: ' . $e->getMessage());
             }
         }
-    }
-
-    protected function createBasicUser()
-    {
-        $this->info('Creating basic user...');
-
-        if (!$this->confirm('Would you like to create a basic user?', true)) {
-            $this->comment('Skipping basic user creation.');
-            return;
-        }
-
-        $name = $this->ask('Enter the name for the basic user');
-        $email = $this->ask('Enter the email address for the basic user');
-        $password = $this->ask('Enter the password for the basic user');
-
-        $userClass = config('core.central_user_model');
-
-        $userClass::create([
-            'name' => $name,
-            'email' => $email,
-            'password' => bcrypt($password),
-        ]);
-
-        $this->info('Basic user created successfully.');
-        $this->line('Email: ' . $email);
-        $this->line('Password: ' . $password);
     }
 }
