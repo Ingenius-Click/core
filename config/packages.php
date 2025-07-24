@@ -14,14 +14,14 @@ return [
 
     'basic_packages' => [
         // Example packages - replace with your actual basic packages
-        'ingenius/auth' => '^0.0.1',
-        'ingenius/coins' => '^0.0.1',
-        'ingenius/orders' => '^0.0.1',
-        'ingenius/payforms' => '^0.0.1',
-        'ingenius/products' => '^0.0.1',
-        'ingenius/shopcart' => '^0.0.1',
-        'ingenius/storefront' => '^0.0.1',
-        'ingenius/shipment' => '^0.0.1'
+        'ingenius/auth' => '^1.0.0',
+        'ingenius/coins' => '^1.0.0',
+        'ingenius/orders' => '^1.0.0',
+        'ingenius/payforms' => '^1.0.0',
+        'ingenius/products' => '^1.0.0',
+        'ingenius/shopcart' => '^1.0.0',
+        'ingenius/storefront' => '^1.0.0',
+        'ingenius/shipment' => '^1.0.0'
         // Add more packages as needed
     ],
 
