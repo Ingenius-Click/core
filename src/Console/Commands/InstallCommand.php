@@ -590,6 +590,15 @@ EOT;
             } catch (\Exception $e) {
                 $this->warn('⚠ Error running composer dump-autoload: ' . $e->getMessage());
             }
+
+            // Run package discovery to ensure newly installed packages are discovered
+            $this->info('Running package discovery...');
+            try {
+                $this->call('package:discover');
+                $this->info('✓ Package discovery completed successfully');
+            } catch (\Exception $e) {
+                $this->warn('⚠ Error running package discovery: ' . $e->getMessage());
+            }
         }
     }
 
