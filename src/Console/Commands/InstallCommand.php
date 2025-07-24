@@ -44,30 +44,58 @@ class InstallCommand extends Command
         // Install basic packages
         $this->installBasicPackages();
 
-        // Publish configurations from registry
-        $this->call('ingenius:publish:configs', [
-            '--force' => true,
-        ]);
-
-        // Publish tenant migrations from all packages
-        $this->call('ingenius:publish:tenant-migrations', [
-            '--force' => true,
-        ]);
-
         $this->info('IngeniusCore package has been installed successfully.');
 
-        // Run migrations
-        if ($this->confirm('Would you like to run migrations now?', true)) {
-            $this->call('migrate');
-        }
+        // Show post-installation instructions
+        $this->showPostInstallationInstructions();
+    }
 
-        // Create basic user (in separate process)
-        $this->info('Creating basic user...');
-        $this->call('ingenius:create-user');
+    /**
+     * Show post-installation instructions to the user
+     */
+    protected function showPostInstallationInstructions()
+    {
+        $this->newLine();
+        $this->line('<fg=yellow>═══════════════════════════════════════════════════════════════════════════════</>');
+        $this->line('<fg=yellow>                          POST-INSTALLATION STEPS                              </>');
+        $this->line('<fg=yellow>═══════════════════════════════════════════════════════════════════════════════</>');
+        $this->newLine();
 
-        // Create basic templates with default features (in separate process)
-        $this->info('Creating basic templates...');
-        $this->call('ingenius:create-templates');
+        $this->line('<fg=cyan>REQUIRED COMMANDS</fg=cyan> - Run these commands in order to complete the setup:');
+        $this->newLine();
+
+        $this->line('<fg=green>1. Publish package configurations:</fg=green>');
+        $this->line('   <fg=white>php artisan ingenius:publish:configs --force</fg=white>');
+        $this->line('   <fg=gray>This publishes configuration files from all installed Ingenius packages.</fg=gray>');
+        $this->newLine();
+
+        $this->line('<fg=green>2. Publish tenant migrations:</fg=green>');
+        $this->line('   <fg=white>php artisan ingenius:publish:tenant-migrations --force</fg=white>');
+        $this->line('   <fg=gray>This publishes tenant-specific migrations from all packages.</fg=gray>');
+        $this->newLine();
+
+        $this->line('<fg=green>3. Run database migrations:</fg=green>');
+        $this->line('   <fg=white>php artisan migrate</fg=white>');
+        $this->line('   <fg=gray>This creates the required database tables for the core system.</fg=gray>');
+        $this->newLine();
+
+        $this->line('<fg=yellow>OPTIONAL COMMANDS</fg=yellow> - You may run these if needed:');
+        $this->newLine();
+
+        $this->line('<fg=blue>• Create a basic user:</fg=blue>');
+        $this->line('   <fg=white>php artisan ingenius:create-user</fg=white>');
+        $this->line('   <fg=gray>Creates an admin user for accessing the system.</fg=gray>');
+        $this->newLine();
+
+        $this->line('<fg=blue>• Create basic templates:</fg=blue>');
+        $this->line('   <fg=white>php artisan ingenius:create-templates</fg=white>');
+        $this->line('   <fg=gray>Sets up default templates with basic features for tenant creation.</fg=gray>');
+        $this->newLine();
+
+        $this->line('<fg=yellow>═══════════════════════════════════════════════════════════════════════════════</>');
+        $this->line('<fg=yellow>                    Run the required commands to finish setup!                  </>');
+        $this->line('<fg=yellow>═══════════════════════════════════════════════════════════════════════════════</>');
+        $this->newLine();
     }
 
     /**
