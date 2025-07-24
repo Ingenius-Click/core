@@ -64,8 +64,9 @@ class InstallCommand extends Command
         // Create basic user
         $this->createBasicUser();
 
-        // Create basic templates with default features
-        $this->createBasicTemplates();
+        // Create basic templates with default features (in separate process)
+        $this->info('Creating basic templates...');
+        $this->call('ingenius:create-templates');
     }
 
     /**
@@ -599,62 +600,6 @@ EOT;
             } catch (\Exception $e) {
                 $this->warn('⚠ Error running package discovery: ' . $e->getMessage());
             }
-        }
-    }
-
-    /**
-     * Create basic templates with default feature sets
-     */
-    protected function createBasicTemplates()
-    {
-        $this->info('Setting up basic templates...');
-
-        if (!$this->confirm('Would you like to create basic templates with default features?', true)) {
-            $this->comment('Skipping basic templates creation.');
-            return;
-        }
-
-        try {
-            $featureManager = app(FeatureManager::class);
-            $basicFeatures = collect($featureManager->getBasicFeatures());
-
-            if ($basicFeatures->isEmpty()) {
-                $this->warn('No basic features found. Skipping template creation.');
-                return;
-            }
-
-            $templates = [
-                [
-                    'name' => 'Basic Template',
-                    'description' => 'A minimal template with essential features for simple store applications',
-                    'identifier' => 'basic',
-                    'features' => $basicFeatures->keys()->toArray(),
-                ]
-            ];
-
-            $createdCount = 0;
-
-            foreach ($templates as $templateData) {
-                $existingTemplate = Template::where('identifier', $templateData['identifier'])->first();
-
-                if ($existingTemplate) {
-                    $this->line("Template '{$templateData['name']}' already exists. Skipping...");
-                    continue;
-                }
-
-                Template::create($templateData);
-                $this->info("✓ Created template: {$templateData['name']}");
-                $createdCount++;
-            }
-
-            if ($createdCount > 0) {
-                $this->info("Successfully created {$createdCount} basic templates.");
-            } else {
-                $this->comment('All basic templates already exist.');
-            }
-        } catch (\Exception $e) {
-            $this->error('Failed to create basic templates: ' . $e->getMessage());
-            $this->warn('You can create templates manually later using the Template model.');
         }
     }
 

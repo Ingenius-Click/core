@@ -7,6 +7,7 @@ use Ingenius\Core\Console\Commands\AddAdminRoleToCentralUserCommand;
 use Ingenius\Core\Console\Commands\ClearSettingsCacheCommand;
 use Ingenius\Core\Console\Commands\CreatePackageCommand;
 use Ingenius\Core\Console\Commands\CreateTenantCommand;
+use Ingenius\Core\Console\Commands\CreateTemplatesCommand;
 use Ingenius\Core\Console\Commands\InitializePackageCommand;
 use Ingenius\Core\Console\Commands\InstallCommand;
 use Ingenius\Core\Console\Commands\MakeMigrationCommand;
@@ -32,6 +33,7 @@ class ConsoleServiceProvider extends ServiceProvider
         InstallCommand::class,
         CreatePackageCommand::class,
         CreateTenantCommand::class,
+        CreateTemplatesCommand::class,
         InitializePackageCommand::class,
         PublishMigrationsCommand::class,
         TenantMigrateCommand::class,
