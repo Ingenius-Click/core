@@ -28,12 +28,12 @@ class TenantPolicy
         return false;
     }
 
-    public function update($user, Tenant $tenant): bool
+    public function edit($user, Tenant $tenant): bool
     {
         $userClass = central_user_class();
 
         if ($user instanceof $userClass) {
-            return $user->can('system.tenants.update');
+            return $user->can('system.tenants.edit');
         }
 
         return false;

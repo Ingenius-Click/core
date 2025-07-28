@@ -35,7 +35,7 @@ class TenantsController extends Controller
 
     public function updateStyles(UpdateStylesRequest $request, string $tenant): JsonResponse
     {
-        $this->authorize('update', Tenant::findOrFail($tenant));
+        $this->authorize('edit', Tenant::findOrFail($tenant));
 
         $tenant = Tenant::findOrFail($tenant);
 
