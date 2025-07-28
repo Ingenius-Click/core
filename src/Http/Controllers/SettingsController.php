@@ -2,25 +2,34 @@
 
 namespace Ingenius\Core\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
+use Ingenius\Core\Helpers\AuthHelper;
 use Ingenius\Core\Facades\Settings;
 use Ingenius\Core\Http\Requests\UpdateSettingsRequest;
+use Ingenius\Core\Models\Settings as ModelsSettings;
 
 class SettingsController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Get all settings for a group.
      *
      * @param string $group
      * @return JsonResponse
      */
-    public function getGroup(string $group): JsonResponse
+    public function getGroup(Request $request, string $group): JsonResponse
     {
+        $user = AuthHelper::getUser();
+        $this->authorizeForUser($user, 'view', ModelsSettings::class);
+
         $settings = Settings::getAllInGroup($group);
-        return response()->json($settings);
+
+        return response()->api(message: 'Settings fetched successfully', data: $settings);
     }
 
     /**
@@ -32,6 +41,9 @@ class SettingsController extends Controller
      */
     public function getSetting(string $group, string $name): JsonResponse
     {
+        $user = AuthHelper::getUser();
+        $this->authorizeForUser($user, 'view', ModelsSettings::class);
+
         $value = Settings::get($group, $name);
         return response()->json(['value' => $value]);
     }
@@ -44,14 +56,25 @@ class SettingsController extends Controller
      * @param string $name
      * @return JsonResponse
      */
-    public function updateSetting(UpdateSettingsRequest $request, string $group, string $name): JsonResponse
+    public function updateSetting(UpdateSettingsRequest $request, string $group): JsonResponse
     {
+        $user = AuthHelper::getUser();
+        $this->authorizeForUser($user, 'edit', ModelsSettings::class);
+
+        $name = $request->input('name');
         $value = $request->input('value');
         $encrypt = $request->input('encrypt', false);
 
-        Settings::set($group, $name, $value, $encrypt);
+        $setting = ModelsSettings::where('group', $group)->where('name', $name)->first();
 
-        return response()->json(['message' => 'Setting updated successfully']);
+        if (!$setting) {
+            return response()->api(message: 'Setting not found', code: 404);
+        }
+
+        $setting->payload = $value;
+        $setting->save();
+
+        return response()->api(message: 'Setting updated successfully');
     }
 
     /**

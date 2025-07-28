@@ -6,6 +6,7 @@ use Ingenius\Core\Constants\CentralDashboardPermissions;
 use Ingenius\Core\Constants\TemplatePermissions;
 use Ingenius\Core\Support\PermissionsManager;
 use Illuminate\Support\ServiceProvider;
+use Ingenius\Core\Constants\SettingsPermissions;
 use Ingenius\Core\Traits\RegistersConfigurations;
 
 class PermissionServiceProvider extends ServiceProvider
@@ -32,6 +33,15 @@ class PermissionServiceProvider extends ServiceProvider
     public function boot(PermissionsManager $permissionsManager): void
     {
         $this->registerCentralPermissions($permissionsManager);
+        $this->registerTenantPermissions($permissionsManager);
+    }
+
+    protected function registerTenantPermissions(PermissionsManager $permissionsManager): void
+    {
+        $permissionsManager->registerMany([
+            SettingsPermissions::VIEW_SETTINGS => 'View settings',
+            SettingsPermissions::EDIT_SETTINGS => 'Edit settings',
+        ], 'System', 'tenant');
     }
 
     /**

@@ -49,6 +49,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Tenant User Model
+    |--------------------------------------------------------------------------
+    |
+    | This option controls which User model to use for tenant application
+    | authentication. By default, it will use the auth package User model.
+    | You can override this by setting the TENANT_USER_MODEL environment variable.
+    |
+    */
+    'tenant_user_model' => env('TENANT_USER_MODEL', 'Ingenius\\Auth\\Models\\User'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Features
     |--------------------------------------------------------------------------
     |

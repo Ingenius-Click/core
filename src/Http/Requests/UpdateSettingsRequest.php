@@ -22,6 +22,7 @@ class UpdateSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'name' => 'required|string',
             'value' => 'required',
             'encrypt' => 'boolean',
         ];

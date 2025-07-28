@@ -76,3 +76,15 @@ if (!function_exists('central_user_class')) {
         return $userClass;
     }
 }
+
+if (!function_exists('tenant_user_class')) {
+    /**
+     * Get the tenant user model class.
+     *
+     * @return string
+     */
+    function tenant_user_class()
+    {
+        return config('core.tenant_user_model', 'Ingenius\\Auth\\Models\\User');
+    }
+}

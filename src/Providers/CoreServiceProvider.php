@@ -2,8 +2,11 @@
 
 namespace Ingenius\Core\Providers;
 
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Ingenius\Core\Policies\SettingsPolicy;
 use Ingenius\Core\Services\FeatureManager;
+use Ingenius\Core\Models\Settings;
 use Ingenius\Core\Support\ConfigRegistry;
 use Ingenius\Core\Support\MigrationRegistry;
 use Ingenius\Core\Support\PermissionsManager;
@@ -92,6 +95,8 @@ class CoreServiceProvider extends ServiceProvider
         // Register the TenantHasFeature middleware
         $this->registerMiddlewares();
 
+        $this->registerPolicies();
+
         // Publish configurations
         $this->publishes([
             __DIR__ . '/../../config/core.php' => config_path('core.php'),
@@ -132,5 +137,10 @@ class CoreServiceProvider extends ServiceProvider
         $router = $this->app['router'];
 
         $router->aliasMiddleware('tenant.has.feature', \Ingenius\Core\Http\Middleware\TenantHasFeature::class);
+    }
+
+    protected function registerPolicies(): void
+    {
+        Gate::policy(Settings::class, SettingsPolicy::class);
     }
 }
