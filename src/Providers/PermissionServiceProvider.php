@@ -74,6 +74,7 @@ class PermissionServiceProvider extends ServiceProvider
         // Template management permissions
         $permissionsManager->registerMany([
             TemplatePermissions::TEMPLATE_VIEW_ANY => 'View templates',
+            TemplatePermissions::TEMPLATE_UPDATE => 'Update templates',
         ], 'Templates', 'central');
     }
 }

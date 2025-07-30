@@ -9,7 +9,10 @@ Route::prefix('central')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('core.login');
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::get('templates', [TemplateController::class, 'index']);
+        Route::prefix('templates')->group(function () {
+            Route::get('/', [TemplateController::class, 'index']);
+            Route::put('{template}', [TemplateController::class, 'update']);
+        });
 
         Route::get('tenants', [TenantsController::class, 'index']);
         Route::post('tenants', [TenantsController::class, 'store']);

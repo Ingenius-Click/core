@@ -8,10 +8,14 @@ class TenantAwareUrlGenerator extends DefaultUrlGenerator
 {
     public function getUrl(): string
     {
-        $url = asset($this->getPathRelativeToRoot());
+        if (tenant()) {
+            $url = asset($this->getPathRelativeToRoot());
 
-        $url = $this->versionUrl($url);
+            $url = $this->versionUrl($url);
 
-        return $url;
+            return $url;
+        }
+
+        return parent::getUrl();
     }
 }

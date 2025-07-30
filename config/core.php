@@ -45,7 +45,7 @@ return [
     | This is separate from tenant authentication.
     |
     */
-    'central_auth_guard' => env('CENTRAL_AUTH_GUARD', 'sanctum'),
+    'central_auth_guard' => env('CENTRAL_AUTH_GUARD', 'web'),
 
     /*
     |--------------------------------------------------------------------------

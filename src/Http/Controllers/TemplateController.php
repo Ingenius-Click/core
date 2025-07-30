@@ -6,6 +6,8 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Ingenius\Core\Actions\UpdateTemplateAction;
+use Ingenius\Core\Http\Requests\UpdateTemplateRequest;
 use Ingenius\Core\Models\Template;
 
 class TemplateController extends Controller
@@ -21,6 +23,20 @@ class TemplateController extends Controller
         return response()->api(
             message: 'Templates fetched successfully',
             data: $templates,
+        );
+    }
+
+    public function update(UpdateTemplateRequest $request, string $template, UpdateTemplateAction $action): JsonResponse
+    {
+        $template = Template::where('identifier', $template)->firstOrFail();
+
+        $this->authorize('update', $template);
+
+        $template = $action->handle($template, $request->validated());
+
+        return response()->api(
+            message: 'Template updated successfully',
+            data: $template,
         );
     }
 }

@@ -17,4 +17,15 @@ class TemplatePolicy
 
         return false;
     }
+
+    public function update($user, Template $template): bool
+    {
+        $userClass = central_user_class();
+
+        if ($user instanceof $userClass) {
+            return $user->can(TemplatePermissions::TEMPLATE_UPDATE);
+        }
+
+        return false;
+    }
 }

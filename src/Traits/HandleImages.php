@@ -45,9 +45,8 @@ trait HandleImages
         } catch (Throwable $e) {
 
             Log::error($e->getMessage());
+            throw $e;
         }
-
-        return null;
     }
 
     /**
@@ -63,11 +62,9 @@ trait HandleImages
             return $model->addMedia($image)
                 ->toMediaCollection($this->getCollectionName($collection));
         } catch (Throwable $e) {
-
             Log::error($e->getMessage());
+            throw $e;
         }
-
-        return null;
     }
 
     /**
