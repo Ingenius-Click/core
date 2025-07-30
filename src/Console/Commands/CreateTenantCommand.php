@@ -100,7 +100,7 @@ class CreateTenantCommand extends Command
             $tenant = Tenant::create([
                 'id' => $id,
                 'template_id' => $template->id,
-                'styles' => $template->styles,
+                'styles' => $template->styles_vars,
             ]);
 
             // Set the tenant name

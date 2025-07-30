@@ -79,6 +79,11 @@ class InstallCommand extends Command
         $this->line('   <fg=gray>This creates the required database tables for the core system.</fg=gray>');
         $this->newLine();
 
+        $this->line('<fg=green>4. Insert permissions:</fg=green>');
+        $this->line('   <fg=white>php artisan ingenius:core:sync-central-permissions</fg=white>');
+        $this->line('   <fg=gray>This inserts the permissions from the PermissionsManager into the central database.</fg=gray>');
+        $this->newLine();
+
         $this->line('<fg=yellow>OPTIONAL COMMANDS</fg=yellow> - You may run these if needed:');
         $this->newLine();
 

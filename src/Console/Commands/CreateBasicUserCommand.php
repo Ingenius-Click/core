@@ -14,6 +14,10 @@ class CreateBasicUserCommand extends Command
     {
         $this->info('Creating basic user...');
 
+        // First, sync central permissions
+        $this->info('Syncing central permissions...');
+        $this->call('ingenius:core:sync-central-permissions');
+
         if (!$this->confirm('Would you like to create a basic user?', true)) {
             $this->comment('Skipping basic user creation.');
             return 0;
@@ -55,11 +59,29 @@ class CreateBasicUserCommand extends Command
                 'password' => bcrypt($password),
             ]);
 
+            // Create admin role if it doesn't exist and assign it to the user
+            $this->info('Creating admin role and assigning to user...');
+
+            $roleModel = config('permission.models.role');
+
+            $adminRole = $roleModel::firstOrCreate(
+                ['name' => 'admin', 'guard_name' => 'web'],
+                ['description' => 'Administrator with all permissions']
+            );
+
+            $permissionModel = config('permission.models.permission');
+            $permissions = $permissionModel::all();
+            $adminRole->syncPermissions($permissions);
+
+            $user->assignRole($adminRole);
+
             $this->info('✓ Basic user created successfully.');
+            $this->info('✓ Admin role assigned successfully.');
             $this->line('User Details:');
             $this->line("  - ID: {$user->id}");
             $this->line("  - Name: {$name}");
             $this->line("  - Email: {$email}");
+            $this->line("  - Role: admin");
 
             return 0;
         } catch (\Exception $e) {
