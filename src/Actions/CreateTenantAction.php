@@ -2,10 +2,13 @@
 
 namespace Ingenius\Core\Actions;
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Ingenius\Core\Events\TenantCreated;
 use Ingenius\Core\Models\Template;
 use Ingenius\Core\Models\Tenant;
+use Ingenius\Core\Settings\CustomizeSettings;
 use Ingenius\Core\Support\TenantInitializationManager;
 
 class CreateTenantAction
@@ -35,6 +38,11 @@ class CreateTenantAction
 
         $tenant->domains()->create([
             'domain' => $data['domain'],
+        ]);
+
+        Artisan::call('ingenius:tenants:migrate', [
+            '--tenants' => [$id],
+            '--force' => true,
         ]);
 
         $this->tenantInitializationManager->initializeTenantViaRequest($tenant, request());

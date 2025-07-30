@@ -97,6 +97,9 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->registerPolicies();
 
+        // Register tenant initializer
+        $this->registerTenantInitializer();
+
         // Publish configurations
         $this->publishes([
             __DIR__ . '/../../config/core.php' => config_path('core.php'),
@@ -142,5 +145,16 @@ class CoreServiceProvider extends ServiceProvider
     protected function registerPolicies(): void
     {
         Gate::policy(Settings::class, SettingsPolicy::class);
+    }
+
+    /**
+     * Register tenant initializer
+     */
+    protected function registerTenantInitializer(): void
+    {
+        $this->app->afterResolving(TenantInitializationManager::class, function (TenantInitializationManager $manager) {
+            $initializer = $this->app->make(\Ingenius\Core\Initializers\CustomizeInitializer::class);
+            $manager->register($initializer);
+        });
     }
 }
