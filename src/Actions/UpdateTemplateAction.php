@@ -20,6 +20,11 @@ class UpdateTemplateAction
             $this->removeImages($data['removed_images'], $template);
         }
 
+        if (isset($data['styles_vars'])) {
+            $template->styles_vars = $data['styles_vars'];
+            $template->save();
+        }
+
         return $template->fresh();
     }
 }

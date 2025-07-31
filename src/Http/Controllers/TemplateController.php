@@ -39,4 +39,16 @@ class TemplateController extends Controller
             data: $template,
         );
     }
+
+    public function getStyles(string $template): JsonResponse
+    {
+        $this->authorize('viewAny', Template::class);
+
+        $template = Template::where('identifier', $template)->firstOrFail();
+
+        return response()->api(
+            message: 'Template styles fetched successfully',
+            data: $template->styles_vars,
+        );
+    }
 }

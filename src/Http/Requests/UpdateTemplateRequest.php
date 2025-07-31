@@ -11,6 +11,7 @@ class UpdateTemplateRequest extends FormRequest
         return [
             'images' => 'nullable|array',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:512',
+            'styles_vars' => 'nullable|array',
         ];
     }
 }

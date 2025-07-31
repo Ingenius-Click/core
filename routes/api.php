@@ -12,6 +12,7 @@ Route::prefix('central')->group(function () {
         Route::prefix('templates')->group(function () {
             Route::get('/', [TemplateController::class, 'index']);
             Route::put('{template}', [TemplateController::class, 'update']);
+            Route::get('{template}/styles', [TemplateController::class, 'getStyles']);
         });
 
         Route::get('tenants', [TenantsController::class, 'index']);

@@ -5,6 +5,7 @@ namespace Ingenius\Core\Console\Commands;
 use Illuminate\Console\Command;
 use Ingenius\Core\Models\Template;
 use Ingenius\Core\Services\FeatureManager;
+use Ingenius\Core\Constants\TemplateStyles;
 
 class CreateTemplatesCommand extends Command
 {
@@ -49,6 +50,7 @@ class CreateTemplatesCommand extends Command
                     'description' => 'A minimal template with essential features for simple store applications',
                     'identifier' => 'basic',
                     'features' => $basicFeatures->keys()->toArray(),
+                    'styles_vars' => TemplateStyles::BASIC_STYLES,
                 ]
             ];
 

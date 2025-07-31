@@ -28,9 +28,11 @@ class CreateTenantAction
 
         $d['id'] = $id;
 
-        $template_id = Template::where('identifier', $data['template'])->first()->id;
+        $template = Template::where('identifier', $data['template'])->first();
 
-        $d['template_id'] = $template_id;
+        $d['template_id'] = $template->id;
+
+        $d['styles'] = $template->styles_vars;
 
         $tenant = Tenant::create($d);
 
