@@ -10,6 +10,7 @@ use Ingenius\Core\Http\Controllers\Controller;
 use Ingenius\Core\Http\Requests\CreateTenantRequest;
 use Ingenius\Core\Http\Requests\UpdateStylesRequest;
 use Ingenius\Core\Models\Tenant;
+use Ingenius\Core\Settings\CustomizeSettings;
 
 class TenantsController extends Controller
 {
@@ -42,5 +43,25 @@ class TenantsController extends Controller
         $tenant->update(['styles' => $request->validated('styles')]);
 
         return response()->api(message: 'Styles updated successfully', data: $tenant);
+    }
+
+    public function getLayout(CustomizeSettings $customizeSettings): JsonResponse
+    {
+        $tenant = Tenant::findOrFail(tenant()->id);
+
+        $template = $tenant->template->identifier;
+
+        $styles = $tenant->styles;
+
+        $settings = [
+            'logo' => $customizeSettings->store_logo,
+            'name' => $customizeSettings->store_name,
+        ];
+
+        return response()->api(message: 'Layout fetched successfully', data: [
+            'template' => $template,
+            'styles' => $styles,
+            'settings' => $settings,
+        ]);
     }
 }

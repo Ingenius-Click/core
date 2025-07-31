@@ -78,7 +78,7 @@ class CustomizeInitializer implements TenantInitializer
     public function rules(): array
     {
         return [
-            'logo' => 'required|image|mimes:jpeg,png,jpg,svg,webp|max:512',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:512',
         ];
     }
 
