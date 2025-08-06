@@ -8,6 +8,8 @@ interface FeatureInterface
 
     public function getName(): string;
 
+    public function getGroup(): string;
+
     public function getPackage(): string;
 
     public function isBasic(): bool;

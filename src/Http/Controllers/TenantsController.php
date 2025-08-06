@@ -62,6 +62,7 @@ class TenantsController extends Controller
             'template' => $template,
             'styles' => $styles,
             'settings' => $settings,
+            'features' => $tenant->template->getFeatures(),
         ]);
     }
 }

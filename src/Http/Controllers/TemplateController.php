@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller;
 use Ingenius\Core\Actions\UpdateTemplateAction;
 use Ingenius\Core\Http\Requests\UpdateTemplateRequest;
 use Ingenius\Core\Models\Template;
+use Ingenius\Core\Resources\TemplateResource;
 
 class TemplateController extends Controller
 {
@@ -18,7 +19,9 @@ class TemplateController extends Controller
     {
         $this->authorize('viewAny', Template::class);
 
-        $templates = Template::all();
+        $templates = Template::all()->map(function (Template $template) {
+            return new TemplateResource($template);
+        });
 
         return response()->api(
             message: 'Templates fetched successfully',

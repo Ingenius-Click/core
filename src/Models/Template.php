@@ -4,6 +4,8 @@ namespace Ingenius\Core\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
+use Ingenius\Core\Services\FeatureManager;
 use Ingenius\Core\Support\Image;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -64,5 +66,21 @@ class Template extends Model implements HasMedia
         }
 
         return $images;
+    }
+
+    public function getFeatures(): Collection
+    {
+        $featureManager = app(FeatureManager::class);
+
+        return collect($this->features)->map(function (string $featureID) use ($featureManager) {
+            $feature = $featureManager->getFeature($featureID);
+
+            return [
+                'identifier' => $feature->getIdentifier(),
+                'name' => $feature->getName(),
+                'group' => $feature->getGroup(),
+                'is_basic' => $feature->isBasic(),
+            ];
+        });
     }
 }
