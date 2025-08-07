@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Database\Eloquent\Builder;
+use Ingenius\Core\Services\AbstractTableHandler;
 use Ingenius\Core\Services\SettingsService;
 
 if (!function_exists('tenant')) {
@@ -86,5 +88,20 @@ if (!function_exists('tenant_user_class')) {
     function tenant_user_class()
     {
         return config('core.tenant_user_model', 'Ingenius\\Auth\\Models\\User');
+    }
+}
+
+if (!function_exists('table_handler_paginate')) {
+    /**
+     * Paginate a table handler.
+     *
+     * @param array $data
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    function table_handler_paginate(array $data, Builder $query)
+    {
+        $tableHandler = app(AbstractTableHandler::class);
+
+        return $tableHandler->paginate($data, $query);
     }
 }

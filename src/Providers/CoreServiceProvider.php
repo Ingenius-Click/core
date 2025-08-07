@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Ingenius\Core\Policies\SettingsPolicy;
 use Ingenius\Core\Services\FeatureManager;
+use Ingenius\Core\Services\AbstractTableHandler;
+use Ingenius\Core\Services\GenericTableHandler;
 use Ingenius\Core\Models\Settings;
 use Ingenius\Core\Support\ConfigRegistry;
 use Ingenius\Core\Support\MigrationRegistry;
@@ -14,6 +16,7 @@ use Ingenius\Core\Support\TenantInitializationManager;
 use Ingenius\Core\Traits\RegistersConfigurations;
 use Ingenius\Core\Traits\RegistersMigrations;
 use Stancl\Tenancy\Tenancy;
+use InvalidArgumentException;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -56,6 +59,24 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(FeatureManager::class, function ($app) {
             return new FeatureManager();
+        });
+
+        // Register the table handler based on configuration
+        $this->app->bind(AbstractTableHandler::class, function ($app) {
+            $handlerClass = config('core.table_handler', GenericTableHandler::class);
+
+            // Validate that the configured class exists
+            if (!class_exists($handlerClass)) {
+                throw new InvalidArgumentException("Table handler class [{$handlerClass}] does not exist.");
+            }
+
+            // Validate that the configured class extends AbstractTableHandler
+            if (!is_subclass_of($handlerClass, AbstractTableHandler::class)) {
+                throw new InvalidArgumentException("Table handler class [{$handlerClass}] must extend AbstractTableHandler.");
+            }
+
+            // Instantiate the configured table handler
+            return new $handlerClass();
         });
 
         // Register core configurations

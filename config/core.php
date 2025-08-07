@@ -71,4 +71,16 @@ return [
         'central_auth' => env('CORE_CENTRAL_AUTH_ENABLED', true),
         'user_management' => env('CORE_USER_MANAGEMENT_ENABLED', true),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Table Handler
+    |--------------------------------------------------------------------------
+    |
+    | This option controls which table handler implementation to use when
+    | the AbstractTableHandler is resolved from the service container.
+    | The configured class must extend AbstractTableHandler.
+    |
+    */
+    'table_handler' => env('CORE_TABLE_HANDLER', 'Ingenius\\Core\\Services\\GenericTableHandler'),
 ];
