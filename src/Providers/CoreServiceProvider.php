@@ -13,6 +13,7 @@ use Ingenius\Core\Support\ConfigRegistry;
 use Ingenius\Core\Support\MigrationRegistry;
 use Ingenius\Core\Support\PermissionsManager;
 use Ingenius\Core\Support\TenantInitializationManager;
+use Ingenius\Core\Services\StoreConfigurationManager;
 use Ingenius\Core\Traits\RegistersConfigurations;
 use Ingenius\Core\Traits\RegistersMigrations;
 use Stancl\Tenancy\Tenancy;
@@ -59,6 +60,11 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(FeatureManager::class, function ($app) {
             return new FeatureManager();
+        });
+
+        // Register the StoreConfigurationManager singleton
+        $this->app->singleton(StoreConfigurationManager::class, function ($app) {
+            return new StoreConfigurationManager();
         });
 
         // Register the table handler based on configuration

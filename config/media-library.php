@@ -51,6 +51,11 @@ return [
     'path_generator' => \Spatie\MediaLibrary\Support\PathGenerator\DefaultPathGenerator::class,
 
     /*
+     * The class that contains the strategy for determining how to remove files.
+     */
+    'file_remover_class' => \Spatie\MediaLibrary\Support\FileRemover\DefaultFileRemover::class,
+
+    /*
      * When urls to files get generated, this class will be called. Use the default
      * if your files are stored locally above the site root or on s3.
      */
