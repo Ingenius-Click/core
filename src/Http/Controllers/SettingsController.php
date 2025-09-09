@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Ingenius\Core\Helpers\AuthHelper;
 use Ingenius\Core\Facades\Settings;
 use Ingenius\Core\Http\Requests\UpdateSettingsRequest;
@@ -15,6 +16,19 @@ use Ingenius\Core\Models\Settings as ModelsSettings;
 class SettingsController extends Controller
 {
     use AuthorizesRequests;
+
+    /**
+     * Settings that should be treated as images
+     */
+    protected array $imageSettings = [
+        'store_logo',
+        'store_black_white_logo',
+        'store_favicon',
+        'logo',
+        'favicon',
+        'header_image',
+        'background_image'
+    ];
 
     /**
      * Get all settings for a group.
@@ -28,6 +42,9 @@ class SettingsController extends Controller
         $this->authorizeForUser($user, 'view', ModelsSettings::class);
 
         $settings = Settings::getAllInGroup($group);
+
+        // Convert image paths to URLs
+        $settings = $this->convertImagePathsToUrls($settings);
 
         return response()->api(message: 'Settings fetched successfully', data: $settings);
     }
@@ -45,6 +62,12 @@ class SettingsController extends Controller
         $this->authorizeForUser($user, 'view', ModelsSettings::class);
 
         $value = Settings::get($group, $name);
+
+        // Convert image path to URL if this is an image setting
+        if (in_array($name, $this->imageSettings) && $value) {
+            $value = $this->generateTenantAwareImageUrl($value);
+        }
+
         return response()->json(['value' => $value]);
     }
 
@@ -56,25 +79,38 @@ class SettingsController extends Controller
      * @param string $name
      * @return JsonResponse
      */
-    public function updateSetting(UpdateSettingsRequest $request, string $group): JsonResponse
+    public function updateSettings(UpdateSettingsRequest $request, string $group): JsonResponse
     {
         $user = AuthHelper::getUser();
         $this->authorizeForUser($user, 'edit', ModelsSettings::class);
 
-        $name = $request->input('name');
-        $value = $request->input('value');
-        $encrypt = $request->input('encrypt', false);
+        $requestSettings = $request->input('settings');
 
-        $setting = ModelsSettings::where('group', $group)->where('name', $name)->first();
+        $notFoundSettings = [];
 
-        if (!$setting) {
-            return response()->api(message: 'Setting not found', code: 404);
+        foreach ($requestSettings as $setting) {
+            $name = $setting['name'];
+            $value = $setting['value'];
+            $encrypt = $setting['encrypt'] ?? false;
+
+            $settingModel = ModelsSettings::where('group', $group)->where('name', $name)->first();
+
+            if (!$settingModel) {
+                $notFoundSettings[] = $name;
+                continue;
+            }
+
+            // Handle image settings
+            if (in_array($name, $this->imageSettings) && $value) {
+                $value = $this->handleImageSetting($name, $value, $settingModel->payload);
+            }
+
+            $settingModel->payload = $value;
+            $settingModel->save();
         }
 
-        $setting->payload = $value;
-        $setting->save();
 
-        return response()->api(message: 'Setting updated successfully');
+        return response()->api(message: 'Setting updated successfully', data: ['notFoundSettings' => $notFoundSettings]);
     }
 
     /**
@@ -140,5 +176,62 @@ class SettingsController extends Controller
         $instance->save();
 
         return response()->json(['message' => 'Settings updated successfully']);
+    }
+
+    /**
+     * Handle image setting by saving base64 data to file
+     */
+    private function handleImageSetting(string $name, string $value, ?string $oldPath = null): string
+    {
+        // Check if value is base64 encoded image
+        if (preg_match('/^data:image\/(\w+);base64,(.+)$/', $value, $matches)) {
+            $extension = $matches[1];
+            $imageData = base64_decode($matches[2]);
+
+            // Delete old image if exists
+            if ($oldPath && Storage::exists($oldPath)) {
+                Storage::delete($oldPath);
+            }
+
+            // Generate unique filename
+            $filename = $name . '_' . uniqid() . '.' . $extension;
+            $path = 'settings/images/' . $filename;
+
+            // Save new image
+            Storage::put($path, $imageData);
+
+            return $path;
+        }
+
+        // If not base64, return as is (might be existing path or URL)
+        return $value;
+    }
+
+    /**
+     * Convert image paths to URLs in settings array
+     */
+    private function convertImagePathsToUrls(array $settings): array
+    {
+        foreach ($settings as $key => $value) {
+            if (in_array($key, $this->imageSettings) && $value) {
+                $settings[$key] = $this->generateTenantAwareImageUrl($value);
+            }
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Generate tenant-aware URL for image
+     */
+    private function generateTenantAwareImageUrl(string $path): string
+    {
+        if (tenant()) {
+            // For tenant context, use asset() which is tenant-aware
+            return asset($path);
+        }
+
+        // For central app, use Storage::url()
+        return Storage::url($path);
     }
 }

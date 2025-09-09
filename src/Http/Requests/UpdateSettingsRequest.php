@@ -22,9 +22,10 @@ class UpdateSettingsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'value' => 'required',
-            'encrypt' => 'boolean',
+            'settings' => 'required|array',
+            'settings.*.name' => 'required|string',
+            'settings.*.value' => 'required',
+            'settings.*.encrypt' => 'boolean',
         ];
     }
 }

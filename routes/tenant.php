@@ -13,7 +13,7 @@ Route::prefix('api')->middleware(['api'])->group(function () {
 
     Route::prefix('settings')->middleware('tenant.user')->group(function () {
         Route::get('/{group}', [SettingsController::class, 'getGroup']);
-        Route::put('/{group}', [SettingsController::class, 'updateSetting']);
+        Route::put('/{group}', [SettingsController::class, 'updateSettings']);
     });
 
     Route::prefix('store-config')->group(function () {

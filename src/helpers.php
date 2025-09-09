@@ -105,3 +105,17 @@ if (!function_exists('table_handler_paginate')) {
         return $tableHandler->paginate($data, $query);
     }
 }
+
+
+if (!function_exists('format_date')) {
+    /**
+     * Format a date.
+     *
+     * @param string $date
+     * @return string
+     */
+    function format_date($date)
+    {
+        return \Carbon\Carbon::parse($date)->format('d/m/Y H:i');
+    }
+}

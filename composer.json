@@ -16,7 +16,8 @@
         "spatie/laravel-permission": "^6.0",
         "spatie/laravel-medialibrary": "^11.13",
         "stancl/tenancy": "^3.9",
-        "laravel/sanctum": "^4.0"
+        "laravel/sanctum": "^4.0",
+        "barryvdh/laravel-dompdf": "^3.0"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0",
