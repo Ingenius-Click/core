@@ -304,8 +304,8 @@ PHP;
 
 namespace Ingenius\\{$name}\\Providers;
 
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
+use Ingenius\Core\Http\Middleware\InitializeTenancyByDomain;
+use Ingenius\Core\Http\Middleware\PreventAccessFromCentralDomains;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
