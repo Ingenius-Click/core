@@ -12,14 +12,6 @@ class MacrosServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
-    }
-
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
-    {
         Response::macro('api', function (string $message, mixed $data = null, int $code = 200, array $params = []) {
             return response()->json([
                 'message' => $message,
@@ -28,4 +20,9 @@ class MacrosServiceProvider extends ServiceProvider
             ], $code);
         });
     }
+
+    /**
+     * Bootstrap services.
+     */
+    public function boot(): void {}
 }

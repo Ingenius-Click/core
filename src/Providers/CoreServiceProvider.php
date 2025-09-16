@@ -4,6 +4,7 @@ namespace Ingenius\Core\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Ingenius\Core\Features\UpdateSettingsFeature;
 use Ingenius\Core\Policies\SettingsPolicy;
 use Ingenius\Core\Services\FeatureManager;
 use Ingenius\Core\Services\AbstractTableHandler;
@@ -60,6 +61,10 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(FeatureManager::class, function ($app) {
             return new FeatureManager();
+        });
+
+        $this->app->afterResolving(FeatureManager::class, function (FeatureManager $manager) {
+            $manager->register(new UpdateSettingsFeature());
         });
 
         // Register the StoreConfigurationManager singleton
