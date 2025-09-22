@@ -4,6 +4,7 @@ namespace Ingenius\Core\Http\Controllers;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Ingenius\Core\Actions\UpdateTemplateAction;
@@ -23,7 +24,7 @@ class TemplateController extends Controller
             return new TemplateResource($template);
         });
 
-        return response()->api(
+        return Response::api(
             message: 'Templates fetched successfully',
             data: $templates,
         );
@@ -37,7 +38,7 @@ class TemplateController extends Controller
 
         $template = $action->handle($template, $request->validated());
 
-        return response()->api(
+        return Response::api(
             message: 'Template updated successfully',
             data: $template,
         );
@@ -49,7 +50,7 @@ class TemplateController extends Controller
 
         $template = Template::where('identifier', $template)->firstOrFail();
 
-        return response()->api(
+        return Response::api(
             message: 'Template styles fetched successfully',
             data: $template->styles_vars,
         );

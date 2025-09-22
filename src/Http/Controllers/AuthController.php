@@ -5,6 +5,7 @@ namespace Ingenius\Core\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
 use Ingenius\Core\Http\Controllers\Controller;
 
 class AuthController extends Controller
@@ -21,14 +22,14 @@ class AuthController extends Controller
         $user = $userClass::where('email', $request->email)->first();
 
         if (!$user) {
-            return response()->api(
+            return Response::api(
                 message: 'User not found',
                 status: 404,
             );
         }
 
         if (!Hash::check($request->password, $user->password)) {
-            return response()->api(
+            return Response::api(
                 message: 'Invalid credentials',
                 status: 401,
             );
@@ -36,7 +37,7 @@ class AuthController extends Controller
 
         if ($request->wantsJson()) {
             $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->api(
+            return Response::api(
                 message: 'Login successful',
                 data: ['token' => $token],
             );

@@ -110,17 +110,21 @@ class TenancyServiceProvider extends ServiceProvider
             // Get the first domain from the tenant's domains relationship
             $tenantDomain = null;
 
+            $request = request();
+
             if ($event->tenancy->tenant && $event->tenancy->tenant->domains->isNotEmpty()) {
                 $tenantDomain = $event->tenancy->tenant->domains->first()->domain;
             }
 
             if ($tenantDomain) {
                 $baseDomain = $this->baseDomain($tenantDomain);
-                $sessionDomain = '.' . $baseDomain;
+                $sessionDomain = $request->getHost() == 'localhost' ? null : '.' . $baseDomain;
 
                 config([
                     'session.domain' => $sessionDomain, // For subdomains
                     'sanctum.stateful' => [$tenantDomain],
+                    'session.same_site' => 'none',
+                    'session.secure' => true
                     // Session connection is now handled by DatabaseSessionTenancyBootstrapper
                 ]);
 

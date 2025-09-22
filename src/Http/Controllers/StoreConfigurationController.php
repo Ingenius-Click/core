@@ -4,6 +4,7 @@ namespace Ingenius\Core\Http\Controllers;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Routing\Controller;
 use Ingenius\Core\Helpers\AuthHelper;
 use Ingenius\Core\Models\Settings as ModelsSettings;
@@ -47,7 +48,7 @@ class StoreConfigurationController extends Controller
             'total_configurations' => count($this->storeConfigManager->getAvailableConfigurations()),
         ];
 
-        return response()->api(
+        return Response::api(
             message: 'Store configuration fetched successfully',
             data: [
                 'configuration' => $storeConfiguration,
@@ -70,7 +71,7 @@ class StoreConfigurationController extends Controller
         $configurations = $this->storeConfigManager->getConfigurationsByPackage($package);
 
         if (empty($configurations)) {
-            return response()->api(
+            return Response::api(
                 message: 'No configurations found for package',
                 code: 404
             );
@@ -83,7 +84,7 @@ class StoreConfigurationController extends Controller
             }
         }
 
-        return response()->api(
+        return Response::api(
             message: "Configuration for package '{$package}' fetched successfully",
             data: $result
         );

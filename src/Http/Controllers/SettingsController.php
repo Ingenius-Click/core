@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Ingenius\Core\Helpers\AuthHelper;
 use Ingenius\Core\Facades\Settings;
@@ -46,7 +47,7 @@ class SettingsController extends Controller
         // Convert image paths to URLs
         $settings = $this->convertImagePathsToUrls($settings);
 
-        return response()->api(message: 'Settings fetched successfully', data: $settings);
+        return Response::api(message: 'Settings fetched successfully', data: $settings);
     }
 
     /**
@@ -110,7 +111,7 @@ class SettingsController extends Controller
         }
 
 
-        return response()->api(message: 'Setting updated successfully', data: ['notFoundSettings' => $notFoundSettings]);
+        return Response::api(message: 'Setting updated successfully', data: ['notFoundSettings' => $notFoundSettings]);
     }
 
     /**

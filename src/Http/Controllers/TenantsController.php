@@ -4,6 +4,7 @@ namespace Ingenius\Core\Http\Controllers;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Response;
 use Ingenius\Core\Actions\CreateTenantAction;
 use Ingenius\Core\Actions\PaginateTenantsAction;
 use Ingenius\Core\Http\Controllers\Controller;
@@ -22,7 +23,7 @@ class TenantsController extends Controller
 
         $tenants = $action->handle();
 
-        return response()->api(message: 'Tenants fetched successfully', data: $tenants);
+        return Response::api(message: 'Tenants fetched successfully', data: $tenants);
     }
 
     public function store(CreateTenantRequest $request, CreateTenantAction $action): JsonResponse
@@ -31,7 +32,7 @@ class TenantsController extends Controller
 
         $tenant = $action->handle($request->validated());
 
-        return response()->api(message: 'Tenant created successfully', data: $tenant);
+        return Response::api(message: 'Tenant created successfully', data: $tenant);
     }
 
     public function updateStyles(UpdateStylesRequest $request, string $tenant): JsonResponse
@@ -42,7 +43,7 @@ class TenantsController extends Controller
 
         $tenant->update(['styles' => $request->validated('styles')]);
 
-        return response()->api(message: 'Styles updated successfully', data: $tenant);
+        return Response::api(message: 'Styles updated successfully', data: $tenant);
     }
 
     public function getLayout(CustomizeSettings $customizeSettings): JsonResponse
@@ -58,7 +59,7 @@ class TenantsController extends Controller
             'name' => $customizeSettings->store_name,
         ];
 
-        return response()->api(message: 'Layout fetched successfully', data: [
+        return Response::api(message: 'Layout fetched successfully', data: [
             'template' => $template,
             'styles' => $styles,
             'settings' => $settings,
