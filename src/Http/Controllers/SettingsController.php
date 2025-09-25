@@ -25,6 +25,8 @@ class SettingsController extends Controller
         'store_logo',
         'store_black_white_logo',
         'store_favicon',
+        'store_footer_black_white_logo',
+        'store_footer_logo',
         'logo',
         'favicon',
         'header_image',
