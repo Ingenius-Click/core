@@ -32,7 +32,7 @@ class CreateTenantAction
 
         $d['template_id'] = $template->id;
 
-        $d['styles'] = isset($data['styles']) ? $data['styles'] : $template->styles_vars;
+        $d['styles'] = isset($data['styles']) ? json_decode($data['styles'], true) : $template->styles_vars;
 
         $tenant = Tenant::create($d);
 

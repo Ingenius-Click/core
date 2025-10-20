@@ -21,7 +21,7 @@ class CreateTenantRequest extends FormRequest
             'name' => 'required|string|max:255',
             'domain' => 'required|string|max:255|unique:domains,domain',
             'template' => 'required|string|exists:templates,identifier',
-            'styles' => 'required|array',
+            'styles' => 'required|string',
         ]);
 
         return $rules;
