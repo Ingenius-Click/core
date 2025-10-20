@@ -10,9 +10,8 @@ class PaginateTenantsAction
 {
     public function handle(array $filters = [], int $perPage = 15): LengthAwarePaginator
     {
-
         $tenants = Tenant::query();
 
-        return $tenants->paginate($perPage);
+        return table_handler_paginate($filters, $tenants);
     }
 }
