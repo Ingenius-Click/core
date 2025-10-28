@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller;
 use Ingenius\Core\Helpers\AuthHelper;
 use Ingenius\Core\Models\Settings as ModelsSettings;
 use Ingenius\Core\Services\StoreConfigurationManager;
+use Ingenius\Core\Settings\ContactSettings;
 use Ingenius\Core\Settings\CustomizeSettings;
 
 class StoreConfigurationController extends Controller
@@ -30,10 +31,14 @@ class StoreConfigurationController extends Controller
         $customizeSettings = new CustomizeSettings();
         $customizeSettings->load();
 
+        $contactSettings = new ContactSettings();
+        $contactSettings->load();
+
         $baseConfig = [
             'store_name' => $customizeSettings->store_name,
             'store_logo' => $customizeSettings->store_logo,
             'store_favicon' => $customizeSettings->store_favicon,
+            'store_map_iframe' => $contactSettings->location_iframe
         ];
 
         // Get all registered configuration extensions from packages
