@@ -7,7 +7,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Ingenius\Core\Actions\StoreTemplateAction;
 use Ingenius\Core\Actions\UpdateTemplateAction;
+use Ingenius\Core\Http\Requests\StoreTemplateRequest;
 use Ingenius\Core\Http\Requests\UpdateTemplateRequest;
 use Ingenius\Core\Models\Template;
 use Ingenius\Core\Resources\TemplateResource;
@@ -27,6 +29,18 @@ class TemplateController extends Controller
         return Response::api(
             message: 'Templates fetched successfully',
             data: $templates,
+        );
+    }
+
+    public function store(StoreTemplateRequest $request, StoreTemplateAction $action): JsonResponse
+    {
+        $this->authorize('create', Template::class);
+
+        $template = $action->handle($request->validated());
+
+        return Response::api(
+            message: 'Template created successfully',
+            data: new TemplateResource($template),
         );
     }
 

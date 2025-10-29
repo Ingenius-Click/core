@@ -15,6 +15,8 @@ class UpdateTemplateRequest extends FormRequest
             'removed_images.*' => 'nullable|integer',
             'styles_vars' => 'nullable|array',
             'configurable' => 'nullable|boolean',
+            'features' => 'sometimes|array',
+            'feateures.*' => 'string',
         ];
     }
 }

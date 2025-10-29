@@ -28,6 +28,10 @@ class UpdateTemplateAction
             $template->configurable = $data['configurable'];
         }
 
+        if (isset($data['features'])) {
+            $template->features = $data['features'];
+        }
+
         $template->save();
 
         return $template->fresh();
