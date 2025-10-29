@@ -5,9 +5,11 @@ namespace Ingenius\Core\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
+use Stancl\Tenancy\Database\Models\Domain;
 use Stancl\Tenancy\Database\Models\Tenant as ModelsTenant;
 
 class Tenant extends ModelsTenant implements TenantWithDatabase
@@ -33,6 +35,10 @@ class Tenant extends ModelsTenant implements TenantWithDatabase
     public function template(): BelongsTo
     {
         return $this->belongsTo(Template::class);
+    }
+
+    public function domains(): HasMany {
+        return $this->hasMany(Domain::class);
     }
 
     public function hasFeature(string $feature): bool

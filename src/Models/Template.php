@@ -15,11 +15,12 @@ class Template extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
-    protected $fillable = ['name', 'description', 'identifier', 'features', 'active', 'styles_vars'];
+    protected $fillable = ['name', 'description', 'identifier', 'features', 'active', 'styles_vars', 'configurable'];
 
     protected $casts = [
         'features' => 'array',
         'styles_vars' => 'array',
+        'configurable' => 'boolean',
     ];
 
     protected $appends = ['images'];

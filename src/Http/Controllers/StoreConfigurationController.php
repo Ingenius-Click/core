@@ -36,7 +36,7 @@ class StoreConfigurationController extends Controller
 
         $baseConfig = [
             'store_name' => $customizeSettings->store_name,
-            'store_logo' => $customizeSettings->store_logo,
+            'store_logo' => generate_tenant_aware_image_url($customizeSettings->store_logo),
             'store_favicon' => $customizeSettings->store_favicon,
             'store_map_iframe' => $contactSettings->location_iframe
         ];

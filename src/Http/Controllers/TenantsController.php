@@ -11,6 +11,7 @@ use Ingenius\Core\Http\Controllers\Controller;
 use Ingenius\Core\Http\Requests\CreateTenantRequest;
 use Ingenius\Core\Http\Requests\UpdateStylesRequest;
 use Ingenius\Core\Models\Tenant;
+use Ingenius\Core\Resources\TenantResource;
 use Ingenius\Core\Settings\CustomizeSettings;
 
 class TenantsController extends Controller
@@ -23,7 +24,7 @@ class TenantsController extends Controller
 
         $tenants = $action->handle();
 
-        return Response::api(message: 'Tenants fetched successfully', data: $tenants);
+        return Response::api(message: 'Tenants fetched successfully', data: $tenants->through(fn($tenant) => new TenantResource($tenant)));
     }
 
     public function store(CreateTenantRequest $request, CreateTenantAction $action): JsonResponse

@@ -30,6 +30,17 @@ class TemplateController extends Controller
         );
     }
 
+    public function show(string $template): JsonResponse {
+        $this->authorize('viewAny', Template::class);
+
+        $template = Template::where('identifier', $template)->firstOrFail();
+
+        return Response::api(
+            message: 'Template fetched successfully',
+            data: new TemplateResource($template),
+        );
+    }
+
     public function update(UpdateTemplateRequest $request, string $template, UpdateTemplateAction $action): JsonResponse
     {
         $template = Template::where('identifier', $template)->firstOrFail();

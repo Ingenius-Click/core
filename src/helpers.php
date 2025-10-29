@@ -119,3 +119,20 @@ if (!function_exists('format_date')) {
         return \Carbon\Carbon::parse($date)->format('d/m/Y H:i');
     }
 }
+
+if (!function_exists('generate_tenant_aware_image_url')) {
+    /**
+     * @param string $path
+     * @return string
+     */
+    function generate_tenant_aware_image_url($path)
+    {
+        if (tenant()) {
+            // For tenant context, use asset() which is tenant-aware
+            return asset($path);
+        }
+
+        // For central app, use Storage::url()
+        return Storage::url($path);
+    }
+}

@@ -22,8 +22,13 @@ class UpdateTemplateAction
 
         if (isset($data['styles_vars'])) {
             $template->styles_vars = $data['styles_vars'];
-            $template->save();
         }
+
+        if( isset($data['configurable'])) {
+            $template->configurable = $data['configurable'];
+        }
+
+        $template->save();
 
         return $template->fresh();
     }
