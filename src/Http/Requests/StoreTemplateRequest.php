@@ -14,11 +14,11 @@ class StoreTemplateRequest extends FormRequest
             'identifier' => 'required|string|max:255|unique:templates,identifier',
             'features' => 'required|array',
             'features.*' => 'string',
-            'styles_vars' => 'nullable|array',
+            'styles' => 'nullable|string',
             'configurable' => 'nullable|boolean',
             'active' => 'nullable|boolean',
-            'images' => 'nullable|array',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:512',
+            'new_images' => 'nullable|array',
+            'new_images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:512',
         ];
     }
 }

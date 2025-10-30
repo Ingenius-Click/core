@@ -9,14 +9,15 @@ class UpdateTemplateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'images' => 'nullable|array',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:512',
+            'name' => 'sometimes|string|max:255',
+            'new_images' => 'nullable|array',
+            'new_images.*' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:512',
             'removed_images' => 'nullable|array',
             'removed_images.*' => 'nullable|integer',
-            'styles_vars' => 'nullable|array',
+            'styles' => 'nullable|string',
             'configurable' => 'nullable|boolean',
             'features' => 'sometimes|array',
-            'feateures.*' => 'string',
+            'features.*' => 'string',
         ];
     }
 }

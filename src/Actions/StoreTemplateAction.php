@@ -12,6 +12,13 @@ class StoreTemplateAction
 
     public function handle(array $data): Template
     {
+        // Decode styles if it's a JSON string and map to styles_vars
+        if (isset($data['styles']) && is_string($data['styles'])) {
+            $data['styles_vars'] = json_decode($data['styles'], true);
+        } elseif (isset($data['styles'])) {
+            $data['styles_vars'] = $data['styles'];
+        }
+
         // Create the template with the basic data
         $template = Template::create([
             'name' => $data['name'],
@@ -24,8 +31,8 @@ class StoreTemplateAction
         ]);
 
         // Handle images if provided
-        if (isset($data['images']) && !empty($data['images'])) {
-            $this->saveImages($data['images'], $template);
+        if (isset($data['new_images']) && !empty($data['new_images'])) {
+            $this->saveImages($data['new_images'], $template);
         }
 
         return $template->fresh();
