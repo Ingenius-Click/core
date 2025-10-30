@@ -17,6 +17,7 @@ use Ingenius\Core\Support\TenantInitializationManager;
 use Ingenius\Core\Services\StoreConfigurationManager;
 use Ingenius\Core\Traits\RegistersConfigurations;
 use Ingenius\Core\Traits\RegistersMigrations;
+use Ingenius\Core\Interfaces\HasCustomerProfile;
 use Stancl\Tenancy\Tenancy;
 use InvalidArgumentException;
 
@@ -115,6 +116,9 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Validate tenant user model implements HasCustomerProfile
+        $this->validateTenantUserContract();
+
         // Register migrations with the registry
         $this->registerMigrations(__DIR__ . '/../../database/migrations', 'core');
 
@@ -188,5 +192,44 @@ class CoreServiceProvider extends ServiceProvider
             $initializer = $this->app->make(\Ingenius\Core\Initializers\CustomizeInitializer::class);
             $manager->register($initializer);
         });
+    }
+
+    /**
+     * Validate that the tenant user model implements HasCustomerProfile interface.
+     * This ensures customer data (lastname, address, phone) is available.
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function validateTenantUserContract(): void
+    {
+        $tenantUserClass = tenant_user_class();
+
+        // Check if the class exists
+        if (!class_exists($tenantUserClass)) {
+            throw new InvalidArgumentException(
+                "Tenant user model [{$tenantUserClass}] does not exist. " .
+                "Please check your core.tenant_user_model configuration."
+            );
+        }
+
+        // Check if it implements HasCustomerProfile
+        $reflection = new \ReflectionClass($tenantUserClass);
+
+        if (!$reflection->implementsInterface(HasCustomerProfile::class)) {
+            throw new InvalidArgumentException(
+                "Tenant user model [{$tenantUserClass}] must implement " .
+                HasCustomerProfile::class . " interface.\n\n" .
+                "This ensures customer profile data (firstname, lastname, address, phone) is available.\n\n" .
+                "Add to your user model:\n" .
+                "  implements " . HasCustomerProfile::class . "\n\n" .
+                "Or use the provided trait:\n" .
+                "  use HasCustomerProfileTrait;\n\n" .
+                "Example:\n" .
+                "  class User extends Authenticatable implements HasCustomerProfile\n" .
+                "  {\n" .
+                "      use HasCustomerProfileTrait;\n" .
+                "  }"
+            );
+        }
     }
 }
