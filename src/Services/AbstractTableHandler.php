@@ -11,6 +11,8 @@ abstract class AbstractTableHandler
 {
     protected $perPage = 15;
 
+    protected ?Builder $q = null;
+
     public function paginate(array $data, Builder $query): LengthAwarePaginator
     {
         $this->search($data, $query)
@@ -19,7 +21,14 @@ abstract class AbstractTableHandler
 
         $this->perPage = $data['per_page'] ?? $this->perPage;
 
+        $this->q = $query->clone();
+
         return $query->paginate($this->perPage);
+    }
+
+    public function getQuery(): ?Builder
+    {
+        return $this->q;
     }
 
     protected abstract function filter(array $data, Builder $query): AbstractTableHandler;

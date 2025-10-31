@@ -106,6 +106,39 @@ if (!function_exists('table_handler_paginate')) {
     }
 }
 
+if (!function_exists('table_handler_paginate_with_metadata')) {
+    /**
+     * Paginate a table handler and include custom metadata.
+     *
+     * @param array $data
+     * @param Builder $query
+     * @param callable|array|null $metadataCallback A callback that receives the filtered query and returns metadata array,
+     *                                               or an array of metadata to include directly, or null for no metadata
+     * @return array Returns an array with 'paginator' and 'metadata' keys
+     */
+    function table_handler_paginate_with_metadata(array $data, Builder $query, $metadataCallback = null)
+    {
+        $tableHandler = app(AbstractTableHandler::class);
+
+        $paginator = $tableHandler->paginate($data, $query);
+
+        $filteredQuery = $tableHandler->getQuery();
+
+        $metadata = [];
+
+        if (is_callable($metadataCallback) && $filteredQuery) {
+            $metadata = $metadataCallback($filteredQuery);
+        } elseif (is_array($metadataCallback)) {
+            $metadata = $metadataCallback;
+        }
+
+        return [
+            'paginator' => $paginator,
+            'metadata' => $metadata,
+        ];
+    }
+}
+
 
 if (!function_exists('format_date')) {
     /**
