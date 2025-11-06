@@ -4,6 +4,7 @@ namespace Ingenius\Core\Settings;
 
 class ContactSettings extends Settings
 {
+    public string $about_us = '';
     public string $address = '';
 
     public string $phone = '';

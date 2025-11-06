@@ -38,6 +38,7 @@ class StoreConfigurationController extends Controller
             'store_name' => $customizeSettings->store_name,
             'store_logo' => generate_tenant_aware_image_url($customizeSettings->store_logo),
             'store_favicon' => $customizeSettings->store_favicon,
+            'store_about_us' => $contactSettings->about_us,
             'store_map_iframe' => $contactSettings->location_iframe
         ];
 
