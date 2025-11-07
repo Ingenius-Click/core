@@ -6,9 +6,8 @@ class ContactSettings extends Settings
 {
     public string $about_us = '';
     public string $address = '';
-
     public string $phone = '';
-
+    public string $email = '';
     public string $latitude = '';
     public string $longitude = '';
 
