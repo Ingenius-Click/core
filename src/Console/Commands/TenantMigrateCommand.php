@@ -29,14 +29,17 @@ class TenantMigrateCommand extends Command
                             {--step : Force the migrations to be run so they can be rolled back individually}
                             {--tenants=* : The tenant(s) to run migrations for}
                             {--all : Run for all tenants}
-                            {--package= : Run migrations for a specific package only}';
+                            {--package= : Run migrations for a specific package only}
+                            {--rollback : Rollback the last database migration}
+                            {--rollback-steps= : Number of migrations to rollback (used with --rollback)}
+                            {--rollback-all : Rollback all migrations}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Run tenant migrations for all Ingenius packages';
+    protected $description = 'Run or rollback tenant migrations for all Ingenius packages';
 
     /**
      * The migration registry instance.
@@ -73,6 +76,11 @@ class TenantMigrateCommand extends Command
             return 0;
         }
 
+        // Check if rollback is requested
+        if ($this->option('rollback') || $this->option('rollback-all')) {
+            return $this->handleRollback($centralTenantMigrationsPath);
+        }
+
         $this->info('Running tenant migrations from central location...');
 
         if (! $this->confirmToProceed()) {
@@ -89,8 +97,8 @@ class TenantMigrateCommand extends Command
         $tenants->each(function (Tenant $tenant) use ($centralTenantMigrationsPath) {
             $this->line("Tenant: {$tenant->getTenantKey()}");
 
-            $tenant->run(function () use ($centralTenantMigrationsPath, $tenant) {
-                $this->runTenantMigration($centralTenantMigrationsPath, $tenant);
+            $tenant->run(function () use ($centralTenantMigrationsPath) {
+                $this->runTenantMigration($centralTenantMigrationsPath);
 
                 if ($this->option('seed')) {
                     $this->call('db:seed', ['--force' => $this->option('force')]);
@@ -107,10 +115,9 @@ class TenantMigrateCommand extends Command
      * Run a tenant migration.
      *
      * @param  string  $path
-     * @param  \Stancl\Tenancy\Contracts\Tenant  $tenant
      * @return void
      */
-    protected function runTenantMigration(string $path, Tenant $tenant)
+    protected function runTenantMigration(string $path)
     {
         $this->line("<info>Running migrations from central tenant directory</info>");
 
@@ -138,5 +145,82 @@ class TenantMigrateCommand extends Command
         }
 
         $this->call('migrate', $options);
+    }
+
+    /**
+     * Handle rollback operations.
+     *
+     * @param  string  $centralTenantMigrationsPath
+     * @return int
+     */
+    protected function handleRollback(string $centralTenantMigrationsPath)
+    {
+        if ($this->option('rollback-all')) {
+            $this->info('Rolling back all tenant migrations...');
+        } else {
+            $steps = $this->option('rollback-steps') ?: 1;
+            $this->info("Rolling back last {$steps} migration batch(es)...");
+        }
+
+        if (! $this->confirmToProceed()) {
+            return 1;
+        }
+
+        $tenants = $this->getTenants();
+
+        if ($tenants->isEmpty()) {
+            $this->error('No tenants found.');
+            return 1;
+        }
+
+        $tenants->each(function (Tenant $tenant) use ($centralTenantMigrationsPath) {
+            $this->line("Tenant: {$tenant->getTenantKey()}");
+
+            $tenant->run(function () use ($centralTenantMigrationsPath) {
+                $this->runTenantRollback($centralTenantMigrationsPath);
+            });
+        });
+
+        $this->info('All tenant migrations have been rolled back successfully.');
+
+        return 0;
+    }
+
+    /**
+     * Run a tenant migration rollback.
+     *
+     * @param  string  $path
+     * @return void
+     */
+    protected function runTenantRollback(string $path)
+    {
+        $this->line("<info>Rolling back migrations from central tenant directory</info>");
+
+        $options = [
+            '--path' => $path,
+            '--realpath' => true,
+        ];
+
+        $database = $this->option('database') ?: config('tenancy.database.tenant_connection_name', 'tenant');
+        $options['--database'] = $database;
+
+        if ($this->option('force')) {
+            $options['--force'] = true;
+        }
+
+        if ($this->option('pretend')) {
+            $options['--pretend'] = true;
+        }
+
+        // Handle rollback-all option
+        if ($this->option('rollback-all')) {
+            // Rollback all migrations by using a large step count
+            $options['--step'] = 999999;
+        } elseif ($this->option('rollback-steps')) {
+            // Rollback specific number of steps
+            $options['--step'] = (int) $this->option('rollback-steps');
+        }
+
+        $this->call('migrate:rollback', $options);
     }
 }
