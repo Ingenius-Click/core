@@ -32,11 +32,13 @@ class SyncCentralPermissionsCommand extends Command
 
         foreach ($permissions as $permissionName => $permissionData) {
 
-            $permissionModel::firstOrCreate([
+            $permissionModel::updateOrCreate([
                 'name' => $permissionName,
                 'guard_name' => 'web',
             ], [
                 'description' => $permissionData['description'],
+                'display_name' => $permissionData['display_name'] ?? null,
+                'group' => $permissionData['group'] ?? null,
             ]);
 
             $progressBar->advance();

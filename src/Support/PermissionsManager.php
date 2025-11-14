@@ -25,14 +25,31 @@ class PermissionsManager
      * @param string $description The permission description
      * @param string $module The module name
      * @param string $context The context (central or tenant)
+     * @param string|null $displayName The display name (optional, will be auto-generated if not provided)
+     * @param string|null $group The group (optional, will be auto-generated if not provided)
      * @return void
      */
-    public function register(string $name, string $description, string $module, string $context = 'central'): void
-    {
+    public function register(
+        string $name,
+        string $description,
+        string $module,
+        string $context = 'central',
+        ?string $displayName = null,
+        ?string $group = null
+    ): void {
+        // Auto-generate display_name and group if not provided
+        if ($displayName === null || $group === null) {
+            $derived = $this->derivePermissionData($name);
+            $displayName = $displayName ?? $derived['display_name'];
+            $group = $group ?? $derived['group'];
+        }
+
         $permission = [
             'name' => $name,
             'description' => $description,
             'module' => $module,
+            'display_name' => $displayName,
+            'group' => $group,
         ];
 
         if ($context === 'tenant') {
@@ -40,6 +57,51 @@ class PermissionsManager
         } else {
             $this->centralPermissions[$name] = $permission;
         }
+    }
+
+    /**
+     * Derive display_name and group from permission name
+     *
+     * Expected format: "resource.action" or "module:resource.action"
+     * Examples:
+     * - "products.view" -> group: "Products", display_name: "View Products"
+     * - "products.create" -> group: "Products", display_name: "Create Products"
+     */
+    protected function derivePermissionData(string $permissionName): array
+    {
+        // Default fallback
+        $displayName = ucwords(str_replace(['.', '_', '-'], ' ', $permissionName));
+        $group = 'General';
+
+        // Parse permission name (format: "resource.action" or "module:resource.action")
+        if (str_contains($permissionName, '.')) {
+            $parts = explode('.', $permissionName);
+
+            if (count($parts) >= 2) {
+                $resource = $parts[0];
+                $action = $parts[1];
+
+                // Handle module prefix (e.g., "shop:products")
+                if (str_contains($resource, ':')) {
+                    $resourceParts = explode(':', $resource);
+                    $resource = end($resourceParts);
+                }
+
+                // Generate group (capitalize and singularize/pluralize as needed)
+                $group = ucfirst($resource);
+
+                // Generate display name (Action + Resource)
+                // e.g., "view" + "products" -> "View Products"
+                $actionLabel = ucfirst($action);
+                $resourceLabel = ucfirst($resource);
+                $displayName = "{$actionLabel} {$resourceLabel}";
+            }
+        }
+
+        return [
+            'display_name' => $displayName,
+            'group' => $group,
+        ];
     }
 
     /**
