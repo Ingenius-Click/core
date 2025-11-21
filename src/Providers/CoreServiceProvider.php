@@ -10,6 +10,7 @@ use Ingenius\Core\Services\FeatureManager;
 use Ingenius\Core\Services\AbstractTableHandler;
 use Ingenius\Core\Services\GenericTableHandler;
 use Ingenius\Core\Models\Settings;
+use Ingenius\Core\Services\PackageHookManager;
 use Ingenius\Core\Support\ConfigRegistry;
 use Ingenius\Core\Support\MigrationRegistry;
 use Ingenius\Core\Support\PermissionsManager;
@@ -66,6 +67,11 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->afterResolving(FeatureManager::class, function (FeatureManager $manager) {
             $manager->register(new UpdateSettingsFeature());
+        });
+
+        // Register the PackageHookManager singleton
+        $this->app->singleton(PackageHookManager::class, function ($app) {
+            return new PackageHookManager();
         });
 
         // Register the StoreConfigurationManager singleton
