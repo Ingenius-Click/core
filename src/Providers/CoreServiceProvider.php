@@ -11,6 +11,7 @@ use Ingenius\Core\Services\AbstractTableHandler;
 use Ingenius\Core\Services\GenericTableHandler;
 use Ingenius\Core\Models\Settings;
 use Ingenius\Core\Services\PackageHookManager;
+use Ingenius\Core\Services\TenantMiddlewareManager;
 use Ingenius\Core\Support\ConfigRegistry;
 use Ingenius\Core\Support\MigrationRegistry;
 use Ingenius\Core\Support\PermissionsManager;
@@ -77,6 +78,11 @@ class CoreServiceProvider extends ServiceProvider
         // Register the StoreConfigurationManager singleton
         $this->app->singleton(StoreConfigurationManager::class, function ($app) {
             return new StoreConfigurationManager();
+        });
+
+        // Register the TenantMiddlewareManager singleton
+        $this->app->singleton(TenantMiddlewareManager::class, function ($app) {
+            return new TenantMiddlewareManager();
         });
 
         // Register the table handler based on configuration

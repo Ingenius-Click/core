@@ -140,11 +140,20 @@ class InstallCommand extends Command
         // Define the middleware configuration to add
         $middlewareConfig = <<<'EOT'
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->api(prepend: [
+        // Base API middleware
+        $apiMiddleware = [
             Illuminate\Session\Middleware\StartSession::class,
             Illuminate\Cookie\Middleware\EncryptCookies::class,
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        ]);
+        ];
+
+        // Add tenant middleware registered by packages
+        $tenantMiddlewareManager = app(\Ingenius\Core\Services\TenantMiddlewareManager::class);
+        if ($tenantMiddlewareManager->hasMiddleware()) {
+            $apiMiddleware = array_merge($apiMiddleware, $tenantMiddlewareManager->getMiddleware());
+        }
+
+        $middleware->api(prepend: $apiMiddleware);
         $middleware->statefulApi();
         $middleware->group('universal', []);
     })
@@ -482,17 +491,27 @@ EOT;
         $this->line('Please manually update your bootstrap/app.php file to include the following middleware configuration:');
         $this->line('');
         $this->line('->withMiddleware(function (Middleware $middleware) {');
-        $this->line('    $middleware->api(prepend: [');
+        $this->line('    // Base API middleware');
+        $this->line('    $apiMiddleware = [');
         $this->line('        Illuminate\Session\Middleware\StartSession::class,');
         $this->line('        Illuminate\Cookie\Middleware\EncryptCookies::class,');
         $this->line('        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,');
-        $this->line('    ]);');
+        $this->line('    ];');
+        $this->line('');
+        $this->line('    // Add tenant middleware registered by packages');
+        $this->line('    $tenantMiddlewareManager = app(\Ingenius\Core\Services\TenantMiddlewareManager::class);');
+        $this->line('    if ($tenantMiddlewareManager->hasMiddleware()) {');
+        $this->line('        $apiMiddleware = array_merge($apiMiddleware, $tenantMiddlewareManager->getMiddleware());');
+        $this->line('    }');
+        $this->line('');
+        $this->line('    $middleware->api(prepend: $apiMiddleware);');
         $this->line('    $middleware->statefulApi();');
         $this->line('    $middleware->group(\'universal\', []);');
         $this->line('})');
         $this->line('');
-        $this->line('Make sure you have the following import at the top of the file:');
+        $this->line('Make sure you have the following imports at the top of the file:');
         $this->line('use Illuminate\Foundation\Configuration\Middleware;');
+        $this->line('use Ingenius\Core\Services\TenantMiddlewareManager;');
         $this->line('');
     }
 

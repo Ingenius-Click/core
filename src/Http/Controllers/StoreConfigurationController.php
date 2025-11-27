@@ -41,7 +41,8 @@ class StoreConfigurationController extends Controller
             'store_favicon' => $customizeSettings->store_favicon,
             'store_phone' => $contactSettings->phone,
             'store_about_us' => $contactSettings->about_us,
-            'store_map_iframe' => $contactSettings->location_iframe
+            'store_map_iframe' => $contactSettings->location_iframe,
+            'server_time' => now()
         ];
 
         // Get all registered configuration extensions from packages

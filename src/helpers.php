@@ -169,3 +169,98 @@ if (!function_exists('generate_tenant_aware_image_url')) {
         return Storage::url($path);
     }
 }
+
+if (!function_exists('convert_currency')) {
+    /**
+     * Convert an amount from base currency to the specified currency.
+     * Uses the hook system to decouple from the coins package.
+     *
+     * @param int $amountInCents The amount in cents (base currency)
+     * @param string|null $toCurrency The target currency code (e.g., 'EUR'). If null, uses current currency.
+     * @param string|null $fromCurrency The source currency code. If null, uses base currency.
+     * @return int The converted amount in cents
+     */
+    function convert_currency(int $amountInCents, ?string $toCurrency = null, ?string $fromCurrency = null): int
+    {
+        $hookManager = app(\Ingenius\Core\Services\PackageHookManager::class);
+
+        $result = $hookManager->execute(
+            'currency.convert',
+            $amountInCents,
+            [
+                'to_currency' => $toCurrency ?? get_current_currency(),
+                'from_currency' => $fromCurrency,
+            ]
+        );
+
+        return $result ?? $amountInCents;
+    }
+}
+
+if (!function_exists('get_current_currency')) {
+    /**
+     * Get the current currency code for the request.
+     * Uses the hook system to decouple from the coins package.
+     *
+     * @return string The currency code (e.g., 'USD', 'EUR')
+     */
+    function get_current_currency(): string
+    {
+        $hookManager = app(\Ingenius\Core\Services\PackageHookManager::class);
+
+        $result = $hookManager->execute('currency.current', null);
+
+        return $result ?? 'USD';
+    }
+}
+
+if (!function_exists('get_currency_metadata')) {
+    /**
+     * Get metadata for the current currency.
+     * Uses the hook system to decouple from the coins package.
+     *
+     * @return array Currency metadata (code, symbol, position, exchange_rate)
+     */
+    function get_currency_metadata(): array
+    {
+        $hookManager = app(\Ingenius\Core\Services\PackageHookManager::class);
+
+        $result = $hookManager->execute('currency.metadata', []);
+
+        return $result ?? [
+            'short_name' => 'USD',
+            'symbol' => '$',
+            'position' => 'front',
+            'exchange_rate' => 1.0,
+        ];
+    }
+}
+
+if (!function_exists('format_currency_amount')) {
+    /**
+     * Format an amount with currency symbol and position.
+     * Uses the hook system to decouple from the coins package.
+     *
+     * @param int $amountInCents The amount in cents
+     * @param string|null $currencyCode The currency code. If null, uses current currency.
+     * @return string Formatted currency string (e.g., '$100.00' or '100,00€')
+     */
+    function format_currency_amount(int $amountInCents, ?string $currencyCode = null): string
+    {
+        $hookManager = app(\Ingenius\Core\Services\PackageHookManager::class);
+
+        $result = $hookManager->execute(
+            'currency.format',
+            $amountInCents,
+            ['currency_code' => $currencyCode]
+        );
+
+        // Fallback formatting if hook not available
+        if ($result === null || $result === $amountInCents) {
+            $amount = $amountInCents / 100;
+            return '$' . number_format($amount, 2);
+        }
+
+        return $result;
+    }
+}
