@@ -7,6 +7,20 @@ use Illuminate\Support\Facades\DB;
 
 class GenericTableHandler extends AbstractTableHandler
 {
+    /**
+     * Apply filters to a query builder statically
+     *
+     * @param array $data
+     * @param Builder $query
+     * @return Builder
+     */
+    public static function applyFilters(array $data, Builder $query): Builder
+    {
+        $instance = new static();
+        $instance->filter($data, $query);
+        return $query;
+    }
+
     protected function filter(array $data, Builder $query): AbstractTableHandler
     {
         if (isset($data['filters']) && is_array($data['filters'])) {
