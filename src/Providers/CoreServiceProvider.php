@@ -5,13 +5,21 @@ namespace Ingenius\Core\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Ingenius\Core\Features\UpdateSettingsFeature;
+use Ingenius\Core\Features\ViewNotificationsFeature;
+use Ingenius\Core\Features\ManageNotificationsFeature;
+use Ingenius\Core\Features\ManageNotificationTemplatesFeature;
 use Ingenius\Core\Policies\SettingsPolicy;
+use Ingenius\Core\Policies\NotificationConfigurationPolicy;
+use Ingenius\Core\Models\NotificationConfiguration;
+use Ingenius\Core\Services\EmailNotificationService;
 use Ingenius\Core\Services\FeatureManager;
 use Ingenius\Core\Services\AbstractTableHandler;
 use Ingenius\Core\Services\GenericTableHandler;
 use Ingenius\Core\Models\Settings;
 use Ingenius\Core\Services\PackageHookManager;
 use Ingenius\Core\Services\TenantMiddlewareManager;
+use Ingenius\Core\Services\EventRegistryService;
+use Ingenius\Core\Services\ChannelRegistryService;
 use Ingenius\Core\Support\ConfigRegistry;
 use Ingenius\Core\Support\MigrationRegistry;
 use Ingenius\Core\Support\PermissionsManager;
@@ -36,11 +44,13 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->register(MacrosServiceProvider::class);
         $this->app->register(TenancyServiceProvider::class);
         $this->app->register(PermissionServiceProvider::class);
+        $this->app->register(NotificationsPermissionServiceProvider::class);
         $this->app->register(MediaLibraryServiceProvider::class);
         $this->app->register(ConsoleServiceProvider::class);
         $this->app->register(SequenceGeneratorServiceProvider::class);
         $this->app->register(SettingsServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(EventServiceProvider::class);
 
         // Register the PermissionsManager singleton
         $this->app->singleton(PermissionsManager::class, function ($app) {
@@ -68,6 +78,9 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->app->afterResolving(FeatureManager::class, function (FeatureManager $manager) {
             $manager->register(new UpdateSettingsFeature());
+            $manager->register(new ViewNotificationsFeature());
+            $manager->register(new ManageNotificationsFeature());
+            $manager->register(new ManageNotificationTemplatesFeature());
         });
 
         // Register the PackageHookManager singleton
@@ -83,6 +96,17 @@ class CoreServiceProvider extends ServiceProvider
         // Register the TenantMiddlewareManager singleton
         $this->app->singleton(TenantMiddlewareManager::class, function ($app) {
             return new TenantMiddlewareManager();
+        });
+
+        // Register the EventRegistryService singleton
+        $this->app->singleton(EventRegistryService::class, fn() => new EventRegistryService());
+
+        // Register the ChannelRegistryService singleton
+        $this->app->singleton(ChannelRegistryService::class, fn() => new ChannelRegistryService());
+
+        $this->app->afterResolving(ChannelRegistryService::class, function (ChannelRegistryService $registry) {
+            // Register built-in channels
+            $registry->register('email', EmailNotificationService::class);
         });
 
         // Register the table handler based on configuration
@@ -148,6 +172,9 @@ class CoreServiceProvider extends ServiceProvider
         // Register tenant initializer
         $this->registerTenantInitializer();
 
+        // Load views
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'core');
+
         // Publish configurations
         $this->publishes([
             __DIR__ . '/../../config/core.php' => config_path('core.php'),
@@ -173,6 +200,11 @@ class CoreServiceProvider extends ServiceProvider
             __DIR__ . '/../../database/migrations/2024_01_01_000001_create_central_users_table.php' => database_path('migrations/' . date('Y_m_d_His') . '_create_central_users_table.php'),
         ], 'ingenius-core-user-migration');
 
+        // Publish views
+        $this->publishes([
+            __DIR__ . '/../../resources/views' => resource_path('views/vendor/core'),
+        ], 'ingenius-core-views');
+
         // Load migrations
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
@@ -193,6 +225,7 @@ class CoreServiceProvider extends ServiceProvider
     protected function registerPolicies(): void
     {
         Gate::policy(Settings::class, SettingsPolicy::class);
+        Gate::policy(NotificationConfiguration::class, NotificationConfigurationPolicy::class);
     }
 
     /**
