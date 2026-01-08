@@ -11,6 +11,7 @@ use Ingenius\Core\Models\Settings as ModelsSettings;
 use Ingenius\Core\Services\StoreConfigurationManager;
 use Ingenius\Core\Settings\ContactSettings;
 use Ingenius\Core\Settings\CustomizeSettings;
+use Ingenius\Core\Settings\PoliciesSettings;
 
 class StoreConfigurationController extends Controller
 {
@@ -34,15 +35,26 @@ class StoreConfigurationController extends Controller
         $contactSettings = new ContactSettings();
         $contactSettings->load();
 
+        $policiesSettings = new PoliciesSettings();
+        $policiesSettings->load();
+
         $baseConfig = [
             'store_name' => $customizeSettings->store_name,
             'store_logo' => generate_tenant_aware_image_url($customizeSettings->store_logo),
+            'store_black_white_logo' => generate_tenant_aware_image_url($customizeSettings->store_black_white_logo),
+            'store_footer_logo' => generate_tenant_aware_image_url($customizeSettings->store_footer_logo),
+            'store_footer_black_white_logo' => generate_tenant_aware_image_url($customizeSettings->store_footer_black_white_logo),
             'store_email' => $contactSettings->email,
-            'store_favicon' => $customizeSettings->store_favicon,
+            'store_favicon' => generate_tenant_aware_image_url($customizeSettings->store_favicon),
             'store_phone' => $contactSettings->phone,
             'store_about_us' => $contactSettings->about_us,
             'store_map_iframe' => $contactSettings->location_iframe,
-            'server_time' => now()
+            'server_time' => now(),
+            'policies' => [
+                'return_policy' => $policiesSettings->return_policy,
+                'shipping_policy' => $policiesSettings->shipping_policy,
+                'warranty_policy' => $policiesSettings->warranty_policy,
+            ]
         ];
 
         // Get all registered configuration extensions from packages

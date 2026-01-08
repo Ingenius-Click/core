@@ -83,4 +83,18 @@ return [
     |
     */
     'table_handler' => env('CORE_TABLE_HANDLER', 'Ingenius\\Core\\Services\\GenericTableHandler'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Settings Classes
+    |--------------------------------------------------------------------------
+    |
+    | Here you can register settings classes for the core package.
+    |
+    */
+    'settings_classes' => [
+        \Ingenius\Core\Settings\ContactSettings::class,
+        \Ingenius\Core\Settings\CustomizeSettings::class,
+        \Ingenius\Core\Settings\PoliciesSettings::class,
+    ],
 ];

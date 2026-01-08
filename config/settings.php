@@ -44,6 +44,7 @@ return [
         'invoices',
         'orders',
         'payforms',
+        'policies',
     ],
 
     /*

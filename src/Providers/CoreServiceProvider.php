@@ -2,6 +2,7 @@
 
 namespace Ingenius\Core\Providers;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Ingenius\Core\Features\UpdateSettingsFeature;
@@ -145,6 +146,9 @@ class CoreServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../../config/packages.php', 'packages');
         $this->mergeConfigFrom(__DIR__ . '/../../config/sequences.php', 'sequences');
         $this->mergeConfigFrom(__DIR__ . '/../../config/settings.php', 'settings');
+
+        // Register settings classes with the core settings system
+        $this->registerSettingsClasses();
     }
 
     /**
@@ -276,5 +280,23 @@ class CoreServiceProvider extends ServiceProvider
                 "  }"
             );
         }
+    }
+
+    /**
+     * Register settings classes with the core settings system.
+     */
+    protected function registerSettingsClasses(): void
+    {
+        // Get existing settings classes from core config
+        $coreSettingsClasses = Config::get('settings.settings_classes', []);
+
+        // Get core package settings classes
+        $packageSettingsClasses = Config::get('core.settings_classes', []);
+
+        // Merge and update the core settings classes
+        $mergedSettingsClasses = array_merge($coreSettingsClasses, $packageSettingsClasses);
+
+        // Update the core settings config
+        Config::set('settings.settings_classes', $mergedSettingsClasses);
     }
 }
