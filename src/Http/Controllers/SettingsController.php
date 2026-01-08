@@ -98,14 +98,17 @@ class SettingsController extends Controller
 
             $settingModel = ModelsSettings::where('group', $group)->where('name', $name)->first();
 
+            // If setting doesn't exist, create it
             if (!$settingModel) {
-                $notFoundSettings[] = $name;
-                continue;
+                $settingModel = new ModelsSettings();
+                $settingModel->group = $group;
+                $settingModel->name = $name;
+                $settingModel->locked = false;
             }
 
             // Handle image settings
             if (in_array($name, $this->imageSettings) && $value) {
-                $value = $this->handleImageSetting($name, $value, $settingModel->payload);
+                $value = $this->handleImageSetting($name, $value, $settingModel->payload ?? null);
             }
 
             $settingModel->payload = $value;
