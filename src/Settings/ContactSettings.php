@@ -22,6 +22,8 @@ class ContactSettings extends Settings
     public string $tiktok = '';
     public string $pinterest = '';
 
+    public array $schedule = [];
+
     public static function group(): string
     {
         return 'contacts';

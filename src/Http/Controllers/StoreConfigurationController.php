@@ -49,6 +49,7 @@ class StoreConfigurationController extends Controller
             'store_phone' => $contactSettings->phone,
             'store_about_us' => $contactSettings->about_us,
             'store_map_iframe' => $contactSettings->location_iframe,
+            'store_schedule' => $contactSettings->schedule,
             'server_time' => now(),
             'policies' => [
                 'return_policy' => $policiesSettings->return_policy,
