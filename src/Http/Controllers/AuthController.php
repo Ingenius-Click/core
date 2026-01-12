@@ -35,6 +35,26 @@ class AuthController extends Controller
             );
         }
 
+        // Check if email verification is required
+        if (method_exists($user, 'hasVerifiedEmail') && !$user->hasVerifiedEmail()) {
+            // Resend verification email
+            if (method_exists($user, 'sendEmailVerificationNotification')) {
+                $user->sendEmailVerificationNotification();
+            }
+
+            if ($request->wantsJson()) {
+                return Response::api(
+                    message: 'Your email address is not verified. A new verification link has been sent to your email.',
+                    data: ['email_verified' => false],
+                    status: 403,
+                );
+            }
+
+            return back()->withErrors([
+                'email' => 'Please verify your email address before logging in. A new verification link has been sent to your email.',
+            ])->withInput($request->except('password'));
+        }
+
         if ($request->wantsJson()) {
             $token = $user->createToken('auth_token')->plainTextToken;
             return Response::api(
