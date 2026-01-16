@@ -50,6 +50,16 @@ class StoreConfigurationController extends Controller
             'store_about_us' => $contactSettings->about_us,
             'store_map_iframe' => $contactSettings->location_iframe,
             'store_schedule' => $contactSettings->schedule,
+            'store_social_networks' => [
+                'whatsapp' => $contactSettings->whatsapp,
+                'facebook' => $contactSettings->facebook,
+                'instagram' => $contactSettings->instagram,
+                'twitter' => $contactSettings->twitter,
+                'linkedin' => $contactSettings->linkedin,
+                'youtube' => $contactSettings->youtube,
+                'tiktok' => $contactSettings->tiktok,
+                'pinterest' => $contactSettings->pinterest,
+            ],
             'server_time' => now(),
             'policies' => [
                 'return_policy' => $policiesSettings->return_policy,
