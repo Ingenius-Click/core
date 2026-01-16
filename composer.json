@@ -3,7 +3,7 @@
     "description": "Core package for Ingenius Click with shared resources and tenancy features",
     "type": "library",
     "license": "MIT",
-    "version": "1.6.6",
+    "version": "1.7.0",
     "authors": [
         {
             "name": "Ingenius Team",
@@ -17,7 +17,8 @@
         "spatie/laravel-medialibrary": "^11.13",
         "stancl/tenancy": "^3.9",
         "laravel/sanctum": "^4.0",
-        "barryvdh/laravel-dompdf": "^3.0"
+        "barryvdh/laravel-dompdf": "^3.0",
+        "laravel-lang/lang": "^15.0"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0",
