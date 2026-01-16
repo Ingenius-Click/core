@@ -24,14 +24,14 @@ class AuthController extends Controller
         if (!$user) {
             return Response::api(
                 message: 'User not found',
-                status: 404,
+                code: 404,
             );
         }
 
         if (!Hash::check($request->password, $user->password)) {
             return Response::api(
                 message: 'Invalid credentials',
-                status: 401,
+                code: 401,
             );
         }
 
@@ -46,7 +46,7 @@ class AuthController extends Controller
                 return Response::api(
                     message: 'Your email address is not verified. A new verification link has been sent to your email.',
                     data: ['email_verified' => false],
-                    status: 403,
+                    code: 403,
                 );
             }
 
