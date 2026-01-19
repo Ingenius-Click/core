@@ -2,6 +2,7 @@
 
 namespace Ingenius\Core\Http\Controllers;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -35,23 +36,20 @@ class AuthController extends Controller
             );
         }
 
-        // Check if email verification is required
-        if (method_exists($user, 'hasVerifiedEmail') && !$user->hasVerifiedEmail()) {
-            // Resend verification email
-            if (method_exists($user, 'sendEmailVerificationNotification')) {
-                $user->sendEmailVerificationNotification();
-            }
+        // Check if email verification is required (user must implement MustVerifyEmail interface)
+        if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
+            $user->sendEmailVerificationNotification();
 
             if ($request->wantsJson()) {
                 return Response::api(
-                    message: 'Your email address is not verified. A new verification link has been sent to your email.',
+                    message: __('core::verification.not_verified'),
                     data: ['email_verified' => false],
                     code: 403,
                 );
             }
 
             return back()->withErrors([
-                'email' => 'Please verify your email address before logging in. A new verification link has been sent to your email.',
+                'email' => __('core::verification.not_verified'),
             ])->withInput($request->except('password'));
         }
 

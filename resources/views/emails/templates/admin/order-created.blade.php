@@ -16,7 +16,6 @@
     <div class="info-box">
         <h3 style="margin-top: 0;">Detalles de la Orden</h3>
         <p><strong>Número de Orden:</strong> {{ $order->order_number ?? 'N/A' }}</p>
-        <p><strong>ID:</strong> {{ $order->id ?? 'N/A' }}</p>
         <p><strong>Fecha de Creación:</strong> {{ $order->created_at?->format('d/m/Y H:i') ?? 'N/A' }}</p>
         <p><strong>Última Actualización:</strong> {{ $order->updated_at?->format('d/m/Y H:i') ?? 'N/A' }}</p>
         <p><strong>Estado:</strong> {{ $order->status_name ?? 'N/A' }}</p>

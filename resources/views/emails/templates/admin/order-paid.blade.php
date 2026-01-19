@@ -16,9 +16,8 @@
     <div class="info-box">
         <h3 style="margin-top: 0;">Detalles de la Factura</h3>
         <p><strong>Número de Factura:</strong> {{ $invoice->invoice_number ?? 'N/A' }}</p>
-        <p><strong>ID:</strong> {{ $invoice->id ?? 'N/A' }}</p>
         <p><strong>Fecha de Pago:</strong> {{ $invoice->payment_date_formatted ?? 'N/A' }}</p>
-        <p><strong>Estado:</strong> {{ $invoice->status ?? 'N/A' }}</p>
+        <p><strong>Estado:</strong> {{ $invoice->status_name ?? 'N/A' }}</p>
         @if(isset($invoice->total))
         <p><strong>Total:</strong> {{ $invoice->total }}</p>
         @endif
@@ -30,7 +29,6 @@
     <div class="info-box">
         <h3 style="margin-top: 0;">Detalles de la Orden</h3>
         <p><strong>Número de Orden:</strong> {{ $order->order_number ?? 'N/A' }}</p>
-        <p><strong>ID:</strong> {{ $order->id ?? 'N/A' }}</p>
         <p><strong>Fecha de Creación:</strong> {{ $order->created_at_formatted ?? 'N/A' }}</p>
         @if(isset($order->total))
         <p><strong>Total:</strong> {{ $order->total }}</p>

@@ -179,6 +179,9 @@ class CoreServiceProvider extends ServiceProvider
         // Load views
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'core');
 
+        // Load translations
+        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'core');
+
         // Publish configurations
         $this->publishes([
             __DIR__ . '/../../config/core.php' => config_path('core.php'),
