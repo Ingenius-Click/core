@@ -13,6 +13,13 @@ class PreventAccessFromCentralDomains extends BasePreventAccessFromCentralDomain
         // Check for X-Forwarded-Host header first (for load balancers/proxies)
         $host = $request->header('X-Forwarded-Host') ?: $request->getHost();
 
+        // If tenant query parameter is provided, use it as the host for validation
+        // This allows verification links to work from central domains
+        $tenantQueryParam = $request->query('tenant');
+        if ($tenantQueryParam) {
+            $host = $tenantQueryParam;
+        }
+
         if (in_array($host, config('tenancy.central_domains'))) {
             $abortRequest = static::$abortRequest ?? function () {
                 abort(404);

@@ -41,6 +41,9 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        // Load translations early so they're available for permission registration
+        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'core');
+
         // Register sub-providers
         $this->app->register(MacrosServiceProvider::class);
         $this->app->register(TenancyServiceProvider::class);
@@ -178,9 +181,6 @@ class CoreServiceProvider extends ServiceProvider
 
         // Load views
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'core');
-
-        // Load translations
-        $this->loadTranslationsFrom(__DIR__ . '/../../lang', 'core');
 
         // Publish configurations
         $this->publishes([

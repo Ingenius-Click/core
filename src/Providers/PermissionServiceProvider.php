@@ -43,8 +43,8 @@ class PermissionServiceProvider extends ServiceProvider
             'View settings',
             'Core',
             'tenant',
-            'View settings',
-            'Settings'
+            __('core::permissions.display_names.view_settings'),
+            __('core::permissions.groups.settings')
         );
 
         $permissionsManager->register(
@@ -52,8 +52,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Edit settings',
             'Core',
             'tenant',
-            'Edit settings',
-            'Settings'
+            __('core::permissions.display_names.edit_settings'),
+            __('core::permissions.groups.settings')
         );
     }
 
@@ -68,8 +68,8 @@ class PermissionServiceProvider extends ServiceProvider
             'View tenants',
             'Core',
             'central',
-            'View tenants',
-            'Tenants'
+            __('core::permissions.display_names.view_tenants'),
+            __('core::permissions.groups.tenants')
         );
 
         $permissionsManager->register(
@@ -77,8 +77,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Create tenants',
             'Core',
             'central',
-            'Create tenants',
-            'Tenants'
+            __('core::permissions.display_names.create_tenants'),
+            __('core::permissions.groups.tenants')
         );
 
         $permissionsManager->register(
@@ -86,8 +86,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Edit tenants',
             'Core',
             'central',
-            'Edit tenants',
-            'Tenants'
+            __('core::permissions.display_names.edit_tenants'),
+            __('core::permissions.groups.tenants')
         );
 
         $permissionsManager->register(
@@ -95,8 +95,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Delete tenants',
             'Core',
             'central',
-            'Delete tenants',
-            'Tenants'
+            __('core::permissions.display_names.delete_tenants'),
+            __('core::permissions.groups.tenants')
         );
 
         // System users permissions
@@ -105,8 +105,8 @@ class PermissionServiceProvider extends ServiceProvider
             'View system users',
             'Core',
             'central',
-            'View system users',
-            'System Users'
+            __('core::permissions.display_names.view_system_users'),
+            __('core::permissions.groups.system_users')
         );
 
         $permissionsManager->register(
@@ -114,8 +114,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Create system users',
             'Core',
             'central',
-            'Create system users',
-            'System Users'
+            __('core::permissions.display_names.create_system_users'),
+            __('core::permissions.groups.system_users')
         );
 
         $permissionsManager->register(
@@ -123,8 +123,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Edit system users',
             'Core',
             'central',
-            'Edit system users',
-            'System Users'
+            __('core::permissions.display_names.edit_system_users'),
+            __('core::permissions.groups.system_users')
         );
 
         $permissionsManager->register(
@@ -132,8 +132,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Delete system users',
             'Core',
             'central',
-            'Delete system users',
-            'System Users'
+            __('core::permissions.display_names.delete_system_users'),
+            __('core::permissions.groups.system_users')
         );
 
         // System roles permissions
@@ -142,8 +142,8 @@ class PermissionServiceProvider extends ServiceProvider
             'View system roles',
             'Core',
             'central',
-            'View system roles',
-            'System Roles'
+            __('core::permissions.display_names.view_system_roles'),
+            __('core::permissions.groups.system_roles')
         );
 
         $permissionsManager->register(
@@ -151,8 +151,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Create system roles',
             'Core',
             'central',
-            'Create system roles',
-            'System Roles'
+            __('core::permissions.display_names.create_system_roles'),
+            __('core::permissions.groups.system_roles')
         );
 
         $permissionsManager->register(
@@ -160,8 +160,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Edit system roles',
             'Core',
             'central',
-            'Edit system roles',
-            'System Roles'
+            __('core::permissions.display_names.edit_system_roles'),
+            __('core::permissions.groups.system_roles')
         );
 
         $permissionsManager->register(
@@ -169,8 +169,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Delete system roles',
             'Core',
             'central',
-            'Delete system roles',
-            'System Roles'
+            __('core::permissions.display_names.delete_system_roles'),
+            __('core::permissions.groups.system_roles')
         );
 
         // System permissions management
@@ -179,8 +179,8 @@ class PermissionServiceProvider extends ServiceProvider
             'View system permissions',
             'Core',
             'central',
-            'View system permissions',
-            'System Permissions'
+            __('core::permissions.display_names.view_system_permissions'),
+            __('core::permissions.groups.system_permissions')
         );
 
         $permissionsManager->register(
@@ -188,8 +188,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Assign system permissions',
             'Core',
             'central',
-            'Assign system permissions',
-            'System Permissions'
+            __('core::permissions.display_names.assign_system_permissions'),
+            __('core::permissions.groups.system_permissions')
         );
 
         // Dashboard permission
@@ -198,8 +198,8 @@ class PermissionServiceProvider extends ServiceProvider
             'View dashboard',
             'Core',
             'central',
-            'View dashboard',
-            'Dashboard'
+            __('core::permissions.display_names.view_dashboard'),
+            __('core::permissions.groups.dashboard')
         );
 
         // Template management permissions
@@ -208,8 +208,8 @@ class PermissionServiceProvider extends ServiceProvider
             'View templates',
             'Core',
             'central',
-            'View templates',
-            'Templates'
+            __('core::permissions.display_names.view_templates'),
+            __('core::permissions.groups.templates')
         );
 
         $permissionsManager->register(
@@ -217,8 +217,8 @@ class PermissionServiceProvider extends ServiceProvider
             'Update templates',
             'Core',
             'central',
-            'Update templates',
-            'Templates'
+            __('core::permissions.display_names.update_templates'),
+            __('core::permissions.groups.templates')
         );
     }
 }
