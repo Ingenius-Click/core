@@ -98,9 +98,9 @@ if (!function_exists('table_handler_paginate')) {
      * @param array $data
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    function table_handler_paginate(array $data, Builder $query)
+    function table_handler_paginate(array $data, Builder $query, ?AbstractTableHandler $tableHandler = null)
     {
-        $tableHandler = app(AbstractTableHandler::class);
+        $tableHandler = $tableHandler ?? app(AbstractTableHandler::class);
 
         return $tableHandler->paginate($data, $query);
     }
@@ -116,9 +116,9 @@ if (!function_exists('table_handler_paginate_with_metadata')) {
      *                                               or an array of metadata to include directly, or null for no metadata
      * @return array Returns an array with 'paginator' and 'metadata' keys
      */
-    function table_handler_paginate_with_metadata(array $data, Builder $query, $metadataCallback = null)
+    function table_handler_paginate_with_metadata(array $data, Builder $query, $metadataCallback = null, ?AbstractTableHandler $tableHandler = null): array
     {
-        $tableHandler = app(AbstractTableHandler::class);
+        $tableHandler = $tableHandler ?? app(AbstractTableHandler::class);
 
         $paginator = $tableHandler->paginate($data, $query);
 

@@ -3,7 +3,7 @@
     "description": "Core package for Ingenius Click with shared resources and tenancy features",
     "type": "library",
     "license": "MIT",
-    "version": "1.8.1",
+    "version": "1.9.0",
     "authors": [
         {
             "name": "Ingenius Team",

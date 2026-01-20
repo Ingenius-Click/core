@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
+use Ingenius\Core\Http\Controllers\Auth\CentralForgotPasswordController;
+use Ingenius\Core\Http\Controllers\Auth\CentralResetPasswordController;
 use Ingenius\Core\Http\Controllers\AuthController;
 use Ingenius\Core\Http\Controllers\TemplateController;
 use Ingenius\Core\Http\Controllers\TenantsController;
@@ -61,6 +63,18 @@ Route::prefix('central')->group(function () {
 
             return back()->with('message', 'Verification link sent!');
         })->middleware(['auth:sanctum', 'throttle:6,1'])->name('central.verification.send');
+    });
+
+    // Password Reset Routes for Central Users
+    Route::prefix('password')->group(function () {
+        // Send password reset link
+        Route::post('/forgot', [CentralForgotPasswordController::class, 'sendResetLinkEmail'])
+            ->middleware(['throttle:6,1'])
+            ->name('central.password.email');
+
+        // Reset password
+        Route::post('/reset', [CentralResetPasswordController::class, 'reset'])
+            ->name('central.password.reset');
     });
 
     Route::middleware('auth:sanctum')->group(function () {

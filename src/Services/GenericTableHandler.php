@@ -166,11 +166,13 @@ class GenericTableHandler extends AbstractTableHandler
     protected function search(array $data, Builder $query): AbstractTableHandler
     {
         if (isset($data['search']) && is_array($data['search'])) {
-            foreach ($data['search'] as $search) {
-                if (isset($search['field']) && isset($search['value'])) {
-                    $query->where($search['field'], 'ilike', '%' . $search['value'] . '%');
+            $query->where(function ($subQuery) use ($data) {
+                foreach ($data['search'] as $search) {
+                    if (isset($search['field']) && isset($search['value'])) {
+                        $subQuery->orWhere($search['field'], 'ilike', '%' . $search['value'] . '%');
+                    }
                 }
-            }
+            });
         }
 
         return $this;
