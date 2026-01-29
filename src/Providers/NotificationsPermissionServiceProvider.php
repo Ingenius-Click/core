@@ -28,7 +28,7 @@ class NotificationsPermissionServiceProvider extends ServiceProvider
             'View notification configurations',
             $this->packageName,
             'tenant',
-            _('core::permissions.display_names.view_notifications'),
+            __('core::permissions.display_names.view_notifications'),
             __('core::permissions.groups.notifications')
         );
 
