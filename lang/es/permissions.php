@@ -10,6 +10,7 @@ return [
         'system_permissions' => 'Permisos del Sistema',
         'dashboard' => 'Panel de Control',
         'templates' => 'Plantillas',
+        'notifications' => 'Notificaciones',
     ],
 
     // Display names
@@ -17,6 +18,14 @@ return [
         // Tenant permissions
         'view_settings' => 'Ver configuración',
         'edit_settings' => 'Editar configuración',
+        
+        // Tenant notifications permissions
+        'view_notifications' => 'Ver notificaciones',
+        'create_notifications' => 'Crear notificaciones',
+        'edit_notifications' => 'Editar notificaciones',
+        'delete_notifications' => 'Eliminar notificaciones',
+        'view_templates' => 'Ver plantillas',
+        'edit_templates' => 'Editar plantillas',
 
         // Central permissions - Tenants
         'view_tenants' => 'Ver inquilinos',

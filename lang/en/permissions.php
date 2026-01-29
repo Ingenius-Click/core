@@ -10,6 +10,7 @@ return [
         'system_permissions' => 'System Permissions',
         'dashboard' => 'Dashboard',
         'templates' => 'Templates',
+        'notifications' => 'Notifications',
     ],
 
     // Display names
@@ -17,6 +18,14 @@ return [
         // Tenant permissions
         'view_settings' => 'View settings',
         'edit_settings' => 'Edit settings',
+
+        // Tenant notifications permissions
+        'view_notifications' => 'View notifications',
+        'create_notifications' => 'Create notifications',
+        'edit_notifications' => 'Edit notifications',
+        'delete_notifications' => 'Delete notifications',
+        'view_templates' => 'View templates',
+        'edit_templates' => 'Edit templates',
 
         // Central permissions - Tenants
         'view_tenants' => 'View tenants',

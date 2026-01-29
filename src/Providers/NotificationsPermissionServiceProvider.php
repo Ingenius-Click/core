@@ -28,8 +28,8 @@ class NotificationsPermissionServiceProvider extends ServiceProvider
             'View notification configurations',
             $this->packageName,
             'tenant',
-            'View notifications',
-            'Notifications'
+            _('core::permissions.display_names.view_notifications'),
+            __('core::permissions.groups.notifications')
         );
 
         $permissionsManager->register(
@@ -37,8 +37,8 @@ class NotificationsPermissionServiceProvider extends ServiceProvider
             'Create notification configurations',
             $this->packageName,
             'tenant',
-            'Create notifications',
-            'Notifications'
+            __('core::permissions.display_names.create_notifications'),
+            __('core::permissions.groups.notifications')
         );
 
         $permissionsManager->register(
@@ -46,8 +46,8 @@ class NotificationsPermissionServiceProvider extends ServiceProvider
             'Edit notification configurations',
             $this->packageName,
             'tenant',
-            'Edit notifications',
-            'Notifications'
+            __('core::permissions.display_names.edit_notifications'),
+            __('core::permissions.groups.notifications')
         );
 
         $permissionsManager->register(
@@ -55,8 +55,8 @@ class NotificationsPermissionServiceProvider extends ServiceProvider
             'Delete notification configurations',
             $this->packageName,
             'tenant',
-            'Delete notifications',
-            'Notifications'
+            __('core::permissions.display_names.delete_notifications'),
+            __('core::permissions.groups.notifications')
         );
 
         $permissionsManager->register(
@@ -64,8 +64,8 @@ class NotificationsPermissionServiceProvider extends ServiceProvider
             'View notification templates',
             $this->packageName,
             'tenant',
-            'View templates',
-            'Notifications'
+            __('core::permissions.display_names.view_templates'),
+            __('core::permissions.groups.notifications')
         );
 
         $permissionsManager->register(
@@ -73,8 +73,8 @@ class NotificationsPermissionServiceProvider extends ServiceProvider
             'Edit notification templates',
             $this->packageName,
             'tenant',
-            'Edit templates',
-            'Notifications'
+            __('core::permissions.display_names.edit_templates'),
+            __('core::permissions.groups.notifications')
         );
     }
 }
