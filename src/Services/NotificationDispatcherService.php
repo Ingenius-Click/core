@@ -57,8 +57,7 @@ class NotificationDispatcherService
         $recipients = $this->resolveRecipients($event, $eventMetadata);
 
         if (empty($recipients)) {
-            Log::warning("No recipients resolved for event: {$eventClass}");
-            return;
+            Log::warning("No customer recipients resolved for event: {$eventClass}");
         }
 
         // Get notification data from resolver (cached to avoid duplicate processing)

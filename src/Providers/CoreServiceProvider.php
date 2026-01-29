@@ -5,6 +5,7 @@ namespace Ingenius\Core\Providers;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Ingenius\Core\Events\ContactFormReceived;
 use Ingenius\Core\Features\UpdateSettingsFeature;
 use Ingenius\Core\Features\ViewNotificationsFeature;
 use Ingenius\Core\Features\ManageNotificationsFeature;
@@ -129,6 +130,20 @@ class CoreServiceProvider extends ServiceProvider
 
             // Instantiate the configured table handler
             return new $handlerClass();
+        });
+
+        $this->app->afterResolving(EventRegistryService::class, function (EventRegistryService $registry) {
+            $registry->register(
+                ContactFormReceived::class,
+                key: 'contact.form.received',
+                label: __('Contact Form Received'),
+                viewName: 'contact-form-received',
+                recipientResolver: \Ingenius\Core\Notifications\Resolvers\ContactRecipientResolver::class,
+                notifiable: true,
+                description: __('Fired when a contact form is submitted'),
+                package: 'core',
+                defaultChannels: ['email']
+            );
         });
 
         // Register core configurations

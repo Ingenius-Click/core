@@ -8,6 +8,10 @@ use Ingenius\Core\Http\Controllers\NotificationConfigurationsController;
 
 Route::prefix('api')->middleware(['api'])->group(function () {
 
+    Route::prefix('contact')->group(function () {
+        Route::post('/', [\Ingenius\Core\Http\Controllers\ContactController::class, 'contact']);
+    });
+
     Route::prefix('layout')->group(function () {
         Route::get('/', [TenantsController::class, 'getLayout']);
     });
