@@ -93,6 +93,9 @@ class EmailNotificationService implements NotificationChannelInterface
             // Create mailable instance
             $mailable = new EventNotificationMailable($event, $context);
 
+            Log::info('Sending email notification');
+            Log::info(config('app.name'));
+
             // Send email synchronously (not queued, since the job already handles queuing)
             Mail::to($recipient)->send($mailable);
 

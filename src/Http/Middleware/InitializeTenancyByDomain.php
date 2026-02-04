@@ -25,9 +25,6 @@ class InitializeTenancyByDomain extends BaseInitializeTenancyByDomain
 
         $fallbackHost = $queryParamForwardedHost ?: $originalHost;
 
-        Log::info('Fallback host');
-        Log::info($fallbackHost);
-
         $host = $forwardedHost ?: $fallbackHost;
 
 

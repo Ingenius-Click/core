@@ -96,6 +96,7 @@
             margin-bottom: 20px;
         }
     </style>
+    @yield('extra-styles')
 </head>
 <body>
     <div class="email-wrapper">
