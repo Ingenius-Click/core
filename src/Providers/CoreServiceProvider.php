@@ -22,6 +22,7 @@ use Ingenius\Core\Services\PackageHookManager;
 use Ingenius\Core\Services\TenantMiddlewareManager;
 use Ingenius\Core\Services\EventRegistryService;
 use Ingenius\Core\Services\ChannelRegistryService;
+use Ingenius\Core\Services\ScheduledTaskManager;
 use Ingenius\Core\Support\ConfigRegistry;
 use Ingenius\Core\Support\MigrationRegistry;
 use Ingenius\Core\Support\PermissionsManager;
@@ -113,6 +114,9 @@ class CoreServiceProvider extends ServiceProvider
             // Register built-in channels
             $registry->register('email', EmailNotificationService::class);
         });
+
+        // Register the ScheduledTaskManager singleton
+        $this->app->singleton(ScheduledTaskManager::class, fn() => new ScheduledTaskManager());
 
         // Register the table handler based on configuration
         $this->app->bind(AbstractTableHandler::class, function ($app) {
