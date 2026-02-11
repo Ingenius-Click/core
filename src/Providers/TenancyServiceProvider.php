@@ -137,10 +137,10 @@ class TenancyServiceProvider extends ServiceProvider
 
                 config([
                     'session.domain' => $sessionDomain,
-                    'sanctum.stateful' => [$tenantDomain],
                     'session.same_site' => 'none',
                     'session.secure' => true
                     // Session connection is now handled by DatabaseSessionTenancyBootstrapper
+                    // Sanctum stateful domains are configured by ConfigureSanctumStatefulDomains middleware
                 ]);
 
                 Log::info('Session domain: ' . ($sessionDomain ?? 'null') . ' (request: ' . $requestHost . ', tenant: ' . $tenantDomain . ')');
