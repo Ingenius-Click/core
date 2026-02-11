@@ -29,7 +29,7 @@ class AppNameBootstrapper implements TenancyBootstrapper
         ]);
 
         // Set app name to the tenant's name
-        Config::set('app.name', $tenantName);
+        // Config::set('app.name', $tenantName);
 
         // Also set mail.from.name to use the tenant's name
         Config::set('mail.from.name', $tenantName);
@@ -50,7 +50,7 @@ class AppNameBootstrapper implements TenancyBootstrapper
 
         // Restore the original values when tenancy ends
         if (isset($this->originalAppName)) {
-            Config::set('app.name', $this->originalAppName);
+            // Config::set('app.name', $this->originalAppName);
         }
 
         if (isset($this->originalMailFromName)) {
