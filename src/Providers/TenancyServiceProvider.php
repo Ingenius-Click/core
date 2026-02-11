@@ -117,18 +117,33 @@ class TenancyServiceProvider extends ServiceProvider
             }
 
             if ($tenantDomain) {
-                $baseDomain = $this->baseDomain($tenantDomain);
-                $sessionDomain = $request->getHost() == 'localhost' ? null : '.' . $baseDomain;
+                $requestHost = $request->getHost();
+
+                // If the request host matches the tenant domain (or is a subdomain of it),
+                // set session domain to allow subdomain sharing.
+                // Otherwise, use null to restrict cookie to exact host (cross-domain setup).
+                $tenantBaseDomain = $this->baseDomain($tenantDomain);
+                $requestBaseDomain = $this->baseDomain($requestHost);
+
+                if ($requestHost == 'localhost') {
+                    $sessionDomain = null;
+                } elseif ($requestBaseDomain === $tenantBaseDomain) {
+                    // Same domain - allow subdomain sharing
+                    $sessionDomain = '.' . $tenantBaseDomain;
+                } else {
+                    // Cross-domain setup - restrict to exact host
+                    $sessionDomain = null;
+                }
 
                 config([
-                    'session.domain' => $sessionDomain, // For subdomains
+                    'session.domain' => $sessionDomain,
                     'sanctum.stateful' => [$tenantDomain],
                     'session.same_site' => 'none',
                     'session.secure' => true
                     // Session connection is now handled by DatabaseSessionTenancyBootstrapper
                 ]);
 
-                Log::info('Session domain: ' . $sessionDomain);
+                Log::info('Session domain: ' . ($sessionDomain ?? 'null') . ' (request: ' . $requestHost . ', tenant: ' . $tenantDomain . ')');
             }
         });
     }
