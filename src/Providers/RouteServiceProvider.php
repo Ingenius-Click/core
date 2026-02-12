@@ -4,8 +4,7 @@ namespace Ingenius\Core\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
-use Ingenius\Core\Http\Middleware\InitializeTenancyByDomain;
-use Ingenius\Core\Http\Middleware\PreventAccessFromCentralDomains;
+use Ingenius\Core\Http\Middleware\InitializeTenancyByRequestData;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -43,8 +42,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapTenantRoutes(): void
     {
         Route::middleware([
-            InitializeTenancyByDomain::class,
-            PreventAccessFromCentralDomains::class,
+            InitializeTenancyByRequestData::class
         ])->group(function () {
             require __DIR__ . '/../../routes/tenant.php';
         });

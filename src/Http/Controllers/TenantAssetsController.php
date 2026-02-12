@@ -10,7 +10,7 @@ class TenantAssetsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('Ingenius\Core\Http\Middleware\InitializeTenancyByDomain');
+        $this->middleware(\Ingenius\Core\Http\Middleware\InitializeTenancyByRequestData::class);
     }
 
     public function asset($path = null)

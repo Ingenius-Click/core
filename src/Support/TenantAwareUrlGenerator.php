@@ -13,6 +13,9 @@ class TenantAwareUrlGenerator extends DefaultUrlGenerator
 
             $url = $this->versionUrl($url);
 
+            $separator = str_contains($url, '?') ? '&' : '?';
+            $url .= $separator . 'tenant=' . tenant()->domains()->first()->domain;
+
             return $url;
         }
 
