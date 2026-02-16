@@ -5,6 +5,7 @@ namespace Ingenius\Core\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Configure Sanctum stateful domains and session settings before Sanctum middleware runs
