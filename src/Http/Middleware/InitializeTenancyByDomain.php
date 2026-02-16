@@ -17,15 +17,15 @@ class InitializeTenancyByDomain extends BaseInitializeTenancyByDomain
      */
     public function handle($request, Closure $next)
     {
-        // Check for X-Forwarded-Host header first (for load balancers/proxies)
-        $forwardedHost = $request->header('X-Forwarded-Host');
+        // Check for X-Tenant header first (for tenant identification)
+        $tenantHeader = $request->header('X-Tenant');
         $originalHost = $request->getHost();
 
-        $queryParamForwardedHost = $request->query('tenant');
+        $queryParamTenant = $request->query('tenant');
 
-        $fallbackHost = $queryParamForwardedHost ?: $originalHost;
+        $fallbackHost = $queryParamTenant ?: $originalHost;
 
-        $host = $forwardedHost ?: $fallbackHost;
+        $host = $tenantHeader ?: $fallbackHost;
 
 
         try {

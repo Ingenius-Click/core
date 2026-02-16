@@ -7,20 +7,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 
 /**
- * Configure Sanctum stateful domains before Sanctum middleware runs
+ * Configure Sanctum stateful domains and session settings before Sanctum middleware runs
  *
- * This middleware runs BEFORE EnsureFrontendRequestsAreStateful and dynamically
- * configures the sanctum.stateful domains based on the tenant identified from
- * request headers (X-Forwarded-Host or ?tenant parameter).
+ * This middleware runs BEFORE StartSession and EnsureFrontendRequestsAreStateful and dynamically
+ * configures the sanctum.stateful domains and session settings (same_site, secure) based on the
+ * tenant identified from request headers (X-Tenant or ?tenant parameter).
+ *
+ * This ensures that session cookies are created with SameSite=none for cross-domain tenant access.
  */
 class ConfigureSanctumStatefulDomains
 {
     public function handle(Request $request, Closure $next)
     {
-        // Get tenant domain from headers or query parameter
-        $forwardedHost = $request->header('X-Forwarded-Host');
+        // Get tenant domain from X-Tenant header or query parameter
+        $tenantHeader = $request->header('X-Tenant');
         $queryTenant = $request->query('tenant');
-        $tenantDomain = $forwardedHost ?: $queryTenant;
+        $tenantDomain = $tenantHeader ?: $queryTenant;
 
         if ($tenantDomain) {
             // Get current stateful domains (defaults from config)
@@ -31,6 +33,12 @@ class ConfigureSanctumStatefulDomains
                 $statefulDomains[] = $tenantDomain;
                 Config::set('sanctum.stateful', $statefulDomains);
             }
+
+            // Configure session for cross-domain cookies BEFORE StartSession middleware
+            Config::set([
+                'session.same_site' => 'none',
+                'session.secure' => true,
+            ]);
         }
 
         return $next($request);
