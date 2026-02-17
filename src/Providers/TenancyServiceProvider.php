@@ -137,7 +137,7 @@ class TenancyServiceProvider extends ServiceProvider
 
                 config([
                     'session.domain' => $sessionDomain,
-                    'session.same_site' => 'none',
+                    'session.same_site' => 'lax',
                     'session.secure' => true,
                     'sanctum.stateful' => [$tenantDomain],
                     // Session connection is now handled by DatabaseSessionTenancyBootstrapper
