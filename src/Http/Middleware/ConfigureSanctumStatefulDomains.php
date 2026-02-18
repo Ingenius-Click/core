@@ -28,7 +28,7 @@ class ConfigureSanctumStatefulDomains
             }
 
             Config::set([
-                'session.same_site' => 'none',
+                'session.same_site' => 'lax',
                 'session.secure' => true,
             ]);
         }
