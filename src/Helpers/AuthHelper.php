@@ -34,15 +34,8 @@ class AuthHelper
      */
     public static function getUser()
     {
-        // Try to get user from sanctum guard first (for API authentication)
         $user = Auth::guard('sanctum')->user();
 
-        // If no user found in sanctum guard, try tenant guard
-        if (!$user) {
-            $user = Auth::guard('tenant')->user();
-        }
-
-        // If still no user and we're not in tenant context, try web guard
         if (!$user && !tenant()) {
             $user = Auth::guard('web')->user();
         }
@@ -57,17 +50,10 @@ class AuthHelper
      */
     public static function check()
     {
-        // Check sanctum guard (API authentication)
         if (Auth::guard('sanctum')->check()) {
             return true;
         }
 
-        // Check tenant guard (tenant context)
-        if (Auth::guard('tenant')->check()) {
-            return true;
-        }
-
-        // Check web guard (central context)
         if (!tenant() && Auth::guard('web')->check()) {
             return true;
         }

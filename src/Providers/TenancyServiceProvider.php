@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Ingenius\Core\Providers;
 
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Stancl\JobPipeline\JobPipeline;
 use Stancl\Tenancy\Events;
-use Stancl\Tenancy\Events\BootstrappingTenancy;
 use Stancl\Tenancy\Jobs;
 use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
@@ -105,47 +103,6 @@ class TenancyServiceProvider extends ServiceProvider
         $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
-
-        Event::listen(BootstrappingTenancy::class, function ($event) {
-            // Get the first domain from the tenant's domains relationship
-            $tenantDomain = null;
-
-            $request = request();
-
-            if ($event->tenancy->tenant && $event->tenancy->tenant->domains->isNotEmpty()) {
-                $tenantDomain = $event->tenancy->tenant->domains->first()->domain;
-            }
-
-            if ($tenantDomain) {
-                $requestHost = $request->getHost();
-
-                // If the request host matches the tenant domain (or is a subdomain of it),
-                // set session domain to allow subdomain sharing.
-                // Otherwise, use null to restrict cookie to exact host (cross-domain setup).
-                $tenantBaseDomain = $this->baseDomain($tenantDomain);
-                $requestBaseDomain = $this->baseDomain($requestHost);
-
-                if ($requestHost == 'localhost') {
-                    $sessionDomain = null;
-                } elseif ($requestBaseDomain === $tenantBaseDomain) {
-                    // Same domain - allow subdomain sharing
-                    $sessionDomain = '.' . $tenantBaseDomain;
-                } else {
-                    // Cross-domain setup - restrict to exact host
-                    $sessionDomain = null;
-                }
-
-                config([
-                    'session.domain' => $sessionDomain,
-                    'session.same_site' => 'lax',
-                    'session.secure' => true,
-                    'sanctum.stateful' => [$tenantDomain],
-                    // Session connection is now handled by DatabaseSessionTenancyBootstrapper
-                ]);
-
-                Log::info('Session domain: ' . ($sessionDomain ?? 'null') . ' (request: ' . $requestHost . ', tenant: ' . $tenantDomain . ')');
-            }
-        });
     }
 
     protected function bootEvents()
@@ -189,11 +146,4 @@ class TenancyServiceProvider extends ServiceProvider
         }
     }
 
-    protected function baseDomain($host)
-    {
-        // Example: sub.tenant.test => tenant.test
-        $parts = explode('.', $host);
-
-        return collect($parts)->slice(-2)->implode('.');
-    }
 }

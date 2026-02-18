@@ -34,7 +34,6 @@ return [
         Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper::class,
         // Stancl\Tenancy\Bootstrappers\RedisTenancyBootstrapper::class, // Note: phpredis is needed
         Ingenius\Core\Bootstrappers\SpatiePermissionsBootstrapper::class,
-        Ingenius\Core\Bootstrappers\DatabaseSessionTenancyBootstrapper::class,
         Ingenius\Core\Bootstrappers\AppNameBootstrapper::class,
     ],
 
