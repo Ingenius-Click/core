@@ -5,37 +5,28 @@ namespace Ingenius\Core\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Log;
 
-/**
- * Configure Sanctum stateful domains and session settings before Sanctum middleware runs
- *
- * This middleware runs BEFORE StartSession and EnsureFrontendRequestsAreStateful and dynamically
- * configures the sanctum.stateful domains and session settings (same_site, secure) based on the
- * tenant identified from request headers (X-Tenant or ?tenant parameter).
- *
- * This ensures that session cookies are created with SameSite=none for cross-domain tenant access.
- */
+// Configure Sanctum stateful domains and session settings for cross-domain tenant access.
+//
+// Supports two execution contexts:
+//   - Pre-initialization (API routes): reads X-Tenant header or ?tenant param, configures
+//     Sanctum before StartSession runs.
+//   - Post-initialization (e.g. /sanctum/csrf-cookie): tenancy is already active, so the
+//     domain is read from the initialized tenant. Central requests (no tenant) are skipped.
 class ConfigureSanctumStatefulDomains
 {
     public function handle(Request $request, Closure $next)
     {
-        // Get tenant domain from X-Tenant header or query parameter
-        $tenantHeader = $request->header('X-Tenant');
-        $queryTenant = $request->query('tenant');
-        $tenantDomain = $tenantHeader ?: $queryTenant;
+        $tenantDomain = $this->resolveTenantDomain($request);
 
         if ($tenantDomain) {
-            // Get current stateful domains (defaults from config)
             $statefulDomains = Config::get('sanctum.stateful', []);
 
-            // Add the tenant domain to stateful list if not already present
             if (!in_array($tenantDomain, $statefulDomains)) {
                 $statefulDomains[] = $tenantDomain;
                 Config::set('sanctum.stateful', $statefulDomains);
             }
 
-            // Configure session for cross-domain cookies BEFORE StartSession middleware
             Config::set([
                 'session.same_site' => 'none',
                 'session.secure' => true,
@@ -43,5 +34,16 @@ class ConfigureSanctumStatefulDomains
         }
 
         return $next($request);
+    }
+
+    protected function resolveTenantDomain(Request $request): ?string
+    {
+        // If tenancy is already initialized, read from the active tenant's first domain.
+        if (tenancy()->initialized && tenancy()->tenant) {
+            return optional(tenancy()->tenant->domains->first())->domain;
+        }
+
+        // Otherwise fall back to the request identifier (pre-initialization context).
+        return $request->header('X-Tenant') ?: $request->query('tenant');
     }
 }
