@@ -29,4 +29,6 @@ interface IOrderable
     public function getCustomerPhone(): ?string;
 
     public function getCustomerAddress(): ?string;
+
+    public function getShippingCost(): int;
 }
