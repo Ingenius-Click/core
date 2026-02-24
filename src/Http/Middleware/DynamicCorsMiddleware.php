@@ -64,14 +64,42 @@ class DynamicCorsMiddleware
     protected function isAllowedOrigin(string $host): bool
     {
         foreach ($this->getAllowedBaseDomains() as $domain) {
+            // Exact match or any subdomain of the stored domain
             if ($host === $domain || str_ends_with($host, '.' . $domain)) {
                 Log::info('DynamicCors');
+                Log::info($host);
+                return true;
+            }
+
+            // For tenant subdomains (e.g. tenant.mydomain.com), also allow the
+            // corresponding backoffice origin (e.g. tenant-backoffice.mydomain.com)
+            $backoffice = $this->deriveBackofficeDomain($domain);
+            if ($backoffice && ($host === $backoffice || str_ends_with($host, '.' . $backoffice))) {
+                Log::info('DynamicCors backoffice');
                 Log::info($host);
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Given a tenant subdomain like `tenant.mydomain.com`, returns the
+     * corresponding backoffice domain `tenant-backoffice.mydomain.com`.
+     * Returns null for root domains (no subdomain prefix).
+     */
+    protected function deriveBackofficeDomain(string $domain): ?string
+    {
+        $dotPos = strpos($domain, '.');
+        if ($dotPos === false) {
+            return null;
+        }
+
+        $prefix = substr($domain, 0, $dotPos);
+        $baseDomain = substr($domain, $dotPos + 1);
+
+        return $prefix . '-backoffice.' . $baseDomain;
     }
 
     protected function getAllowedBaseDomains(): array
