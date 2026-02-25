@@ -56,6 +56,19 @@ class TenantMiddlewareManager
     }
 
     /**
+     * Static helper — resolves the singleton and returns all registered middleware classes.
+     * Intended for use inside RouteServiceProvider::mapTenantRoutes():
+     *
+     *   Route::middleware([InitializeTenancyByRequestData::class, ...TenantMiddlewareManager::all()])
+     *
+     * @return array<string>
+     */
+    public static function all(): array
+    {
+        return app(static::class)->getMiddleware();
+    }
+
+    /**
      * Clear all registered middleware
      *
      * @return void

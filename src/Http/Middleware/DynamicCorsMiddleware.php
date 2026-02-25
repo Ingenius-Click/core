@@ -31,7 +31,7 @@ class DynamicCorsMiddleware
 
     protected const ALLOWED_METHODS = 'GET, POST, PUT, PATCH, DELETE, OPTIONS';
 
-    protected const ALLOWED_HEADERS = 'Authorization, Content-Type, X-Requested-With, X-Guest-Token, Accept, Origin, X-Tenant';
+    protected const ALLOWED_HEADERS = 'Authorization, Content-Type, X-Requested-With, X-Guest-Token, Accept, Origin, X-Tenant, X-Currency';
 
     protected const MAX_AGE = '86400';
 
