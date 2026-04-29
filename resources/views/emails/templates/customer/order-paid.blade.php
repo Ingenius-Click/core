@@ -82,7 +82,14 @@
         @endif
 
         @if(isset($shipment['price_formatted']))
-        <p><strong>Costo de Envío:</strong> {{ $shipment['price_formatted'] }}</p>
+        <p><strong>Costo de Envío:</strong> {{ $shipment['price_formatted'] }}@if(!empty($shipment['is_external'])) (pago al recibir, no incluido en el total)@endif</p>
+        @endif
+
+        @if(!empty($shipment['is_external']))
+        <p><strong>Aviso de envío externo:</strong> El costo del envío no está incluido en el total de tu pedido. Deberás pagarlo directamente al mensajero al recibir el pedido.</p>
+        @if(!empty($shipment['external_payment_instructions']))
+        <p><strong>Instrucciones de pago del envío:</strong> {{ $shipment['external_payment_instructions'] }}</p>
+        @endif
         @endif
 
         @if(isset($shipment['beneficiary_name']))
